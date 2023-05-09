@@ -97,7 +97,7 @@
 
   programs.chromium = {
     enable = true;
-    package = pkgs.ungoogled-chromium;
+    #package = pkgs.ungoogled-chromium;
     extensions = [
       { id = "ogfcmafjalglgifnmanfmnieipoejdcf"; } # umatrix
       { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; } # vimium
