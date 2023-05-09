@@ -91,7 +91,11 @@
 ;;; Editor ;;;
 ;; Disable these annoying bars
 (tool-bar-mode -1)
-(scroll-bar-mode -1)
+(defun my/disable-scroll-bars (frame)
+  (modify-frame-parameters frame
+                           '((vertical-scroll-bars . nil)
+                             (horizontal-scroll-bars . nil))))
+(add-hook 'after-make-frame-functions 'my/disable-scroll-bars)
 
 ;; Consult
 (use-package consult
@@ -181,8 +185,8 @@
 
 (setq-default cursor-type 'bar)
 
-(set-frame-font (font-spec :family "FiraCode Nerd Font" :size 14))
-(setq default-frame-alist '((font . "FiraCode Nerd Font 12")))
+(set-frame-font (font-spec :family "Iosevka Nerd Font" :size 14))
+(setq default-frame-alist '((font . "Iosevka Nerd Font 12")))
 
 (use-package ligature
   :ensure
