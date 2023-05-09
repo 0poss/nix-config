@@ -8,9 +8,11 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { nixpkgs, home-manager, ... }@inputs: {
+  outputs = { nixpkgs, home-manager, nix-colors, ... }@inputs: {
     nixosConfigurations = {
       teletubbies = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
@@ -21,7 +23,7 @@
     homeConfigurations = {
       "oposs@teletubbies" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = { inherit inputs; };
+        extraSpecialArgs = { inherit nix-colors; };
         modules = [ ./home-manager/home.nix ];
       };
     };

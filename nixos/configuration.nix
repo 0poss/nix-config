@@ -37,8 +37,8 @@
   };
 
   # Enable swap on luks
-  boot.initrd.luks.devices."luks-f7a29f48-8f45-4cab-b329-458bf37bd1f6".device = "/dev/disk/by-uuid/f7a29f48-8f45-4cab-b329-458bf37bd1f6";
-  boot.initrd.luks.devices."luks-f7a29f48-8f45-4cab-b329-458bf37bd1f6".keyFile = "/crypto_keyfile.bin";
+  boot.initrd.luks.devices."luks-fbf7a0d7-2394-48a0-975f-d86730676423".device = "/dev/disk/by-uuid/fbf7a0d7-2394-48a0-975f-d86730676423";
+  boot.initrd.luks.devices."luks-fbf7a0d7-2394-48a0-975f-d86730676423".keyFile = "/crypto_keyfile.bin";
 
   networking.hostName = "teletubbies"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -118,7 +118,7 @@
     isNormalUser = true;
     description = "oposs";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ ];
+    packages = with pkgs; [ git ];
   };
 
   # List packages installed in system profile. To search, run:
@@ -127,7 +127,6 @@
 
   fonts.fonts = with pkgs; [
     dejavu_fonts
-    (nerdfonts.override { fonts = [ "FiraCode" ]; })
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
