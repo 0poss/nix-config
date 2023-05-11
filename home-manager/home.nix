@@ -19,6 +19,9 @@
     keyboard.layout = "fr";
 
     packages = with pkgs; [
+      python3
+      python3Packages.ipython
+
       swaylock
       swayidle
       wl-clipboard
@@ -38,7 +41,6 @@
   #home.packages = with pkgs; [ steam ];
 
   programs.home-manager.enable = true;
-  programs.starship.enable = true;
 
   programs.git = {
     enable = true;
@@ -105,7 +107,17 @@
     commandLineArgs = [
       "--js-flags=--jitless"
       "--js-flags=--noexpose_wasm"
+      "--disable-3d-apis"
     ];
+  };
+
+  programs.librewolf = {
+    enable = true;
+    settings = {
+      "javascript.options.baselinejit" = false;
+      "javascript.options.wasm" = false;
+      "webgl.disabled" = true; # Set to true by default
+    };
   };
 
   services.emacs = {
@@ -135,7 +147,7 @@
       terminal = "kitty";
       menu = "wofi --show run";
 
-      startup = [ {command="emacsclient --create-frame";} ];
+      startup = [ ];
 
       input = {
         "*" = {
@@ -168,13 +180,19 @@
                        (range 1 10));
           in
             {
-              "${mod}+Shift+r" = "reload";
-              "${mod}+Shift+e" = "exec swaymsg exit";
+              "${mod}+Shift+b" = "reload";
+              "${mod}+Shift+o" = "exec swaymsg exit";
 
               "${mod}+Return" = "exec ${terminal}";
               "${mod}+e" = "exec emacsclient --create-frame";
               "${mod}+d" = "exec ${menu}";
               "${mod}+Shift+q" = "kill";
+
+              "${mod}+f" = "fullscreen";
+              "${mod}+space" = "floating toggle";
+              "${mod}+Shift+e" = "layout split";
+              "${mod}+Shift+s" = "layout stacking";
+              "${mod}+Shift+w" = "layout tabbed";
 
               "${mod}+${left}" = "focus left";
               "${mod}+${down}" = "focus down";
