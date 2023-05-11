@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { inputs, lib, config, pkgs, ... }:
 
 {
@@ -77,7 +73,6 @@
   nix = {
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
-
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
     };
@@ -113,17 +108,31 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  programs.zsh = {
+    enable = true;
+    shellAliases = {
+      l = "ls -lh";
+      ll = "ls -lAh";
+    };
+    ohMyZsh = {
+      enable = true;
+      plugins = [ "git" "thefuck" ];
+      theme = "robbyrussell";
+    };
+  };
+
   users.users.oposs = {
     isNormalUser = true;
     description = "oposs";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ git ];
+    packages = with pkgs; [ git thefuck ];
+    shell = pkgs.zsh;
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [ vim ];
+  environment = with pkgs; {
+    systemPackages = [ vim ];
+    shells = [ bash zsh ];
+  };
 
   fonts.fonts = with pkgs; [
     dejavu_fonts
