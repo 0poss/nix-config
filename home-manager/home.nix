@@ -1,8 +1,8 @@
-{ pkgs, config, lib, nix-colors, ... }: {
+{ pkgs, config, lib, nix-colors, overlays, ... }: {
   imports = [ nix-colors.homeManagerModules.default ];
 
   nixpkgs = {
-    overlays = [ ];
+    overlays = lib.attrValues overlays;
 
     config = {
       allowUnfree = false;
@@ -22,13 +22,16 @@
       python3
       python3Packages.ipython
 
+      (nerdfonts.override { fonts = [ "Iosevka" ]; })
+
       swaylock
-      swayidle
       wl-clipboard
-      mako
       wofi
       waybar
-      (nerdfonts.override { fonts = [ "Iosevka" ]; })
+      grim
+      slurp
+
+      (ida-free.overrideAttrs (oldAttrs: { meta.licence = null; }))
     ];
 
     file = {
@@ -51,7 +54,7 @@
   programs.kitty = {
     enable = true;
     font = {
-      name = "Iosevka";
+      name = "Iosevka Nerd Font";
       size = 12;
     };
     settings = with config.colorScheme; {

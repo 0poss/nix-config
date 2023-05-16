@@ -14,16 +14,10 @@
 
   outputs = { self, nixpkgs, home-manager, nix-colors, ... }@inputs:
     let
-      inherit (self) outputs;
-      forAllSystems = nixpkgs.lib.genAttrs [
-        "aarch64-linux"
-        "i686-linux"
-        "x86_64-linux"
-        "aarch64-darwin"
-        "x86_64-darwin"
-      ];
+      forAllSystems = nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
     in
       rec {
+        overlays = import ./overlays { inherit inputs; };
 
         packages = forAllSystems (system:
           let pkgs = nixpkgs.legacyPackages.${system};
@@ -45,7 +39,7 @@
         homeConfigurations = {
           "oposs@teletubbies" = home-manager.lib.homeManagerConfiguration {
             pkgs = nixpkgs.legacyPackages.x86_64-linux;
-            extraSpecialArgs = { inherit nix-colors; };
+            extraSpecialArgs = { inherit nix-colors overlays; };
             modules = [ ./home-manager/home.nix ];
           };
         };
