@@ -1,0 +1,208 @@
+#+TITLE: 0poss's emacs config
+#+AUTHOR: 0poss
+
+* Setup basic stuff
+Setup the font.
+#+begin_src emacs-lisp
+  (add-to-list 'default-frame-alist '(font . "Iosevka Nerd Font-11"))
+#+end_src
+
+Follow symlinks and disable sound bell.
+#+begin_src emacs-lisp
+  (setq-default vc-follow-symlinks t
+		visible-bell t)
+#+end_src
+
+Normal selection by default.
+#+begin_src emacs-lisp
+  (delete-selection-mode 1)
+#+end_src
+
+Enable line wrapping.
+#+begin_src emacs-lisp
+  (setq word-wrap t)
+#+end_src
+
+* Loading packages
+** Melpa
+#+begin_src emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+
+  (unless package-archive-contents
+    (package-refresh-contents))
+#+end_src
+
+** use-package
+#+begin_src emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+#+end_src
+
+* Editing enhancement
+** Motion
+Replacement for `vim-sneak`.
+#+begin_src emacs-lisp
+  (use-package    avy
+    :ensure       t
+    :bind         ("M-s M-s" . avy-goto-char-2))
+#+end_src
+
+** Massive edits
+`M-s l` for multiple cursors.
+#+begin_src emacs-lisp
+  (use-package    multiple-cursors
+    :ensure       t
+    :bind         ("M-s l" . mc/edit-lines))
+#+end_src
+
+* Interface enhancement
+** Change default stuff
+Disable startup message.
+#+begin_src emacs-lisp
+  (setq inhibit-startup-message t
+	initial-scratch-message "(find-file user-init-file)")
+#+end_src
+
+Change the ugly block cursor.
+#+begin_src emacs-lisp
+  (setq-default cursor-type 'bar)
+#+end_src
+
+Disable these awful bars.
+#+begin_src emacs-lisp
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+#+end_src
+
+I don't want any trailing whitespace, so mark them bright red.
+#+begin_src emacs-lisp
+  (setq show-trailing-whitespace t)
+#+end_src
+
+** Theme
+Damn this theme is underrated.
+#+begin_src emacs-lisp
+  (use-package    color-theme-sanityinc-tomorrow
+    :ensure       t
+    :config       (load-theme 'sanityinc-tomorrow-bright t))
+#+end_src
+
+** Tree for emacs
+#+begin_src emacs-lisp
+  (use-package    neotree
+    :ensure       t
+    :bind         ("C-t" . neotree-toggle))
+#+end_src
+
+** Tokens
+Rainbow delimeters.
+#+begin_src emacs-lisp
+  (use-package     rainbow-delimiters
+    :ensure        t
+    :hook          (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+** Mode line
+Nice, very lightweight, mode line.
+#+begin_src emacs-lisp
+  (use-package    feebleline
+    :ensure       t
+    :config       (setq feebleline-msg-functions
+			'((feebleline-line-number         :post "" :fmt "%5s")
+			  (feebleline-column-number       :pre ":" :fmt "%-2s")
+			  (feebleline-file-directory      :face feebleline-dir-face :post "")
+			  (feebleline-file-or-buffer-name :face font-lock-keyword-face :post "")
+			  (feebleline-file-modified-star  :face font-lock-warning-face :post "")
+			  (feebleline-git-branch          :face feebleline-git-face :pre " : ")
+			  (feebleline-project-name        :align right)))
+                  (feebleline-mode 1))
+#+end_src
+
+** Window management
+Expands the focused window if it has little space.
+#+begin_src emacs-lisp
+  (use-package    zoom
+    :ensure       t
+    :config       (zoom-mode t))
+#+end_src
+
+** Helpers
+Disable shortcut completion options.
+#+begin_src emacs-lisp
+  (use-package    which-key
+    :ensure       t
+    :config       (which-key-mode t))
+#+end_src
+
+** Miscellaneous
+Side minimap on the right.
+#+begin_src emacs-lisp
+  (use-package    sublimity
+    :ensure       t
+    :config       (sublimity-mode t))
+#+end_src
+
+* Org-mode
+Easy config nice config.
+#+begin_src emacs-lisp
+  (use-package    org-modern
+    :ensure       t
+    :hook         (org-mode . org-modern-mode))
+#+end_src
+
+* Development
+Stuff for programming.
+** Lsp
+First set some optimizations.
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold (* 1024 1024 100)
+	read-process-output-max (* 1024 1024))
+#+end_src
+
+Then install `lsp-mode`.
+#+begin_src emacs-lisp
+  (use-package   lsp-mode
+    :ensure      t
+    :config      (setq lsp-idle-delay 0.0)
+    :bind-keymap ("C-l" . lsp-command-map)
+    :bind        (:map lsp-command-map
+		       ("C-r" . lsp-rename)
+		       ("C-a" . lsp-execute-code-action)
+		       ("C-d" . lsp-find-definition)
+		       ("C-s" . lsp-find-references))
+    :hook        ((lsp-mode . lsp-enable-which-key-integration)
+		  (c-mode . lsp)
+		  (c++-mode . lsp)))
+#+end_src
+
+Setup company for completion. This plugin is responsible for displaying the completion popup.
+#+begin_src emacs-lisp
+  (use-package    company
+    :ensure       t
+    :config       (setq company-minimum-prefix-length 1
+			company-idle-delay 0.0))
+#+end_src
+
+lsp-ui displays some annotations (types, errors, code actions, and maybe some other stuff that I'm not aware of) on the right of the screen when hovering a specific line or token.
+#+begin_src emacs-lisp
+  (use-package    lsp-ui
+    :ensure       t
+    ; Fix line-wrapping bug in lsp-ui-sideline
+    :custom-face  (markdown-code-face ((t (:inherit default))))
+    :config       (setq lsp-ui-sideline-show-diagnostics 0
+			lsp-ui-sideline-show-hover 0
+			lsp-ui-sideline-show-code-action 0
+			lsp-ui-sideline-update-mode 'line
+			lsp-ui-sideline-delay 0.0))
+#+end_src
+
+** Languages
+#+begin_src emacs-lisp
+  (use-package    nix-mode
+    :ensure       t
+    :mode         "\\.nix\\'")
+#+end_src
