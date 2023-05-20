@@ -33,8 +33,8 @@
   };
 
   # Enable swap on luks
-  boot.initrd.luks.devices."luks-fbf7a0d7-2394-48a0-975f-d86730676423".device = "/dev/disk/by-uuid/fbf7a0d7-2394-48a0-975f-d86730676423";
-  boot.initrd.luks.devices."luks-fbf7a0d7-2394-48a0-975f-d86730676423".keyFile = "/crypto_keyfile.bin";
+  boot.initrd.luks.devices."luks-1a0330c4-0181-48d3-aa33-d4545ca369f3".device = "/dev/disk/by-uuid/1a0330c4-0181-48d3-aa33-d4545ca369f3";
+  boot.initrd.luks.devices."luks-1a0330c4-0181-48d3-aa33-d4545ca369f3".keyFile = "/crypto_keyfile.bin";
 
   networking.hostName = "teletubbies"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -121,10 +121,12 @@
     };
   };
 
+  programs.adb.enable = true;
+
   users.users.oposs = {
     isNormalUser = true;
     description = "oposs";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "adbusers" ];
     packages = with pkgs; [ git thefuck ];
     shell = pkgs.zsh;
   };
@@ -133,6 +135,8 @@
     systemPackages = [ vim ];
     shells = [ bash zsh ];
   };
+
+  services.udev.packages = [ pkgs.android-udev-rules ];
 
   fonts.fonts = with pkgs; [
     dejavu_fonts

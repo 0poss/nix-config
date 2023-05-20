@@ -19,12 +19,17 @@
     keyboard.layout = "fr";
 
     packages = with pkgs; [
+      clang
+      clang-tools
+      cmake
+      gnumake
       python3
       python3Packages.ipython
 
       (nerdfonts.override { fonts = [ "Iosevka" ]; })
 
       swaylock
+      swayidle
       wl-clipboard
       wofi
       waybar
@@ -32,16 +37,16 @@
       slurp
 
       (ida-free.overrideAttrs (oldAttrs: { meta.licence = null; }))
+      hugo
+      go
+      nodejs
     ];
 
     file = {
-      ".emacs.d/init.el" = {
-        source = ../emacs/init.el;
-      };
+      ".emacs.d/init.el" = { source = ../emacs/init.el; };
+      ".emacs.d/config.org" = { source = ../emacs/config.org; };
     };
   };
-
-  #home.packages = with pkgs; [ steam ];
 
   programs.home-manager.enable = true;
 
