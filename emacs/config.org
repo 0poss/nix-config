@@ -130,12 +130,33 @@ Expands the focused window if it has little space.
     :config       (zoom-mode t))
 #+end_src
 
-** Helpers
-Disable shortcut completion options.
+** Shortcuts and minibuffer
+Save command history.
+#+begin_src emacs-lisp
+  (use-package    savehist
+    :config       (savehist-mode t))
+#+end_src
+
+Display shortcut completion options.
 #+begin_src emacs-lisp
   (use-package    which-key
     :ensure       t
-    :config       (which-key-mode t))
+    :config       (which-key-mode t)
+                  (setq which-key-idle-delay 0.75))
+#+end_src
+
+Display minibuffer completion options.
+#+begin_src emacs-lisp
+  (use-package    vertico
+    :ensure       t
+    :config       (vertico-mode t))
+#+end_src
+
+Annotate vertico's output (with corresponding keybindings for example).
+#+begin_src emacs-lisp
+  (use-package    marginalia
+    :ensure       t
+    :config       (marginalia-mode t))
 #+end_src
 
 ** Miscellaneous
@@ -201,6 +222,7 @@ lsp-ui displays some annotations (types, errors, code actions, and maybe some ot
 #+end_src
 
 ** Languages
+*** Nix
 #+begin_src emacs-lisp
   (use-package    nix-mode
     :ensure       t
