@@ -41,11 +41,6 @@
       go
       nodejs
     ];
-
-    file = {
-      ".emacs.d/init.el" = { source = ../emacs/init.el; };
-      ".emacs.d/config.org" = { source = ../emacs/config.org; };
-    };
   };
 
   programs.home-manager.enable = true;
@@ -56,6 +51,9 @@
     userEmail = "brnnrlxndr@gmail.com";
   };
 
+  #
+  # Configure kitty
+  #
   programs.kitty = {
     enable = true;
     font = {
@@ -128,15 +126,10 @@
     };
   };
 
-  services.emacs = {
-    enable = true;
-    client.enable = true;
-  };
-
-  programs.emacs = {
-    enable = true;
-  };
-
+  #
+  # Sway configuration
+  #
+  home.file."Pictures/Wallpapers/".source = ../wallpapers;
   wayland.windowManager.sway = {
     enable = true;
 
@@ -153,13 +146,19 @@
       right = "l";
 
       terminal = "kitty";
-      menu = "kickoff -c ~/kickoff/config.toml";
+      menu = "kickoff";
 
       startup = [ ];
 
       input = {
         "*" = {
           xkb_layout = config.home.keyboard.layout;
+        };
+      };
+
+      output = {
+        "*" = {
+          bg = ''"'' + (builtins.toString ../wallpapers/m606.jpg) + ''" fill'';
         };
       };
 
@@ -236,8 +235,10 @@
     };
   };
 
+  #
   # Configure kickoff
-  home.file."kickoff/config.toml".text = with config.colorScheme; ''
+  #
+  home.file.".config/kickoff/config.toml".text = with config.colorScheme; ''
   prompt = ">  "
   padding = 500
   font_size = 32.0
@@ -261,6 +262,22 @@
   nav_down = ["Down", "ctrl+n"]
   exit = ["Escape"]
   '';
+
+  #
+  # Emacs configuration
+  #
+  services.emacs = {
+    enable = true;
+    client.enable = true;
+  };
+
+  programs.emacs = {
+    enable = true;
+  };
+
+  # Import my config
+  home.file.".emacs.d/init.el".source = ../emacs/init.el;
+  home.file.".emacs.d/config.org".source = ../emacs/config.org;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";

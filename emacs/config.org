@@ -42,6 +42,7 @@ Enable line wrapping.
 #+end_src
 
 * Editing enhancement
+# Not sure "motion" fits in "editing".
 ** Motion
 Replacement for `vim-sneak`.
 #+begin_src emacs-lisp
@@ -56,6 +57,14 @@ Replacement for `vim-sneak`.
   (use-package    multiple-cursors
     :ensure       t
     :bind         ("M-s l" . mc/edit-lines))
+#+end_src
+
+** Numbers
+#+begin_src emacs-lisp
+  (use-package    evil-numbers
+    :ensure       t
+    :bind         ("C-c C-a" . evil-numbers/inc-at-pt)
+                  ("C-c C-x" . evil-numbers/dec-at-pt))
 #+end_src
 
 * Interface enhancement
@@ -83,7 +92,6 @@ I don't want any trailing whitespace, so mark them bright red.
 #+end_src
 
 ** Theme
-Damn this theme is underrated.
 #+begin_src emacs-lisp
   (use-package    color-theme-sanityinc-tomorrow
     :ensure       t
@@ -171,7 +179,8 @@ Easy config nice config.
 #+begin_src emacs-lisp
   (use-package    org-modern
     :ensure       t
-    :hook         (org-mode . org-modern-mode))
+    :hook         (org-mode . org-modern-mode)
+                  (org-mode . visual-line-mode))
 #+end_src
 
 * Development
