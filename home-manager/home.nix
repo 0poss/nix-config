@@ -32,7 +32,6 @@
       swayidle
       wl-clipboard
       kickoff
-      waybar
       grim
       slurp
 
@@ -166,6 +165,23 @@
         inner = 10;
       };
 
+      bars = [
+        {
+          statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
+          position = "bottom";
+          colors = with config.colorScheme; {
+            background = "#${colors.base00}";
+            statusline = "#${colors.base00}";
+            separator = "#${colors.base05}";
+            focusedWorkspace = {
+              background = "#${colors.base00}";
+              border = "#${colors.base02}";
+              text = "#${colors.base05}";
+            };
+          };
+        }
+      ];
+
       modes = with lib;
         let mod = config.wayland.windowManager.sway.config.modifier;
             inherit (config.wayland.windowManager.sway.config)
@@ -260,6 +276,38 @@
               "${mod}+Shift+${ws."9"}" = "move container to workspace number 9";
               "${mod}+Shift+${ws."10"}" = "move container to workspace number 10";
             };
+    };
+  };
+
+  #
+  # Configure i3status-rust
+  #
+  programs.i3status-rust = {
+    enable = true;
+    package = pkgs.unstable.i3status-rust;
+    bars = {
+      default = {
+        settings.theme = with config.colorScheme; {
+          theme = "plain";
+          overrides = {
+            idle_bg = "#${colors.base00}";
+            idle_fg = "#${colors.base05}";
+          };
+        };
+        blocks = [
+          { block = "memory";
+            format = " $icon $mem_used_percents.eng(w:2) ";
+            format_alt = " $icon_swap $swap_used_percents.eng(w:2) "; }
+          { block = "disk_space";
+            path = "/";
+            info_type = "available";
+            alert_unit = "GB";
+            interval = 20;
+            warning = 100;
+            alert = 40;
+            format = " $icon root: $available.eng(w:2) "; }
+        ];
+      };
     };
   };
 
