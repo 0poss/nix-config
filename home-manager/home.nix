@@ -166,6 +166,32 @@
         inner = 10;
       };
 
+      modes = with lib;
+        let mod = config.wayland.windowManager.sway.config.modifier;
+            inherit (config.wayland.windowManager.sway.config)
+              terminal menu left down up right;
+        in
+          {
+            "system: [e]xit [r]eboot [p]oweroff [h]ibernate" = {
+              e = "exec swaymsg exit";
+              r = "exec reboot";
+              p = "exec poweroff";
+              h = "systemctl hibernate";
+              Return = "mode default";
+              Escape = "mode default";
+              "${mod}+g" = "mode default";
+            };
+            resize = {
+              "${mod}+${left}" = "resize shrink width 10 px";
+              "${mod}+${down}" = "resize grow height 10 px";
+              "${mod}+${up}" = "resize shrink height 10 px";
+              "${mod}+${right}" = "resize grow width 10 px";
+              Return = "mode default";
+              Escape = "mode default";
+              "${mod}+g" = "mode default";
+            };
+          };
+
       keybindings = with lib;
         let mod = config.wayland.windowManager.sway.config.modifier;
             inherit (config.wayland.windowManager.sway.config)
@@ -196,10 +222,12 @@
               "${mod}+Shift+q" = "kill";
 
               "${mod}+f" = "fullscreen";
-              "${mod}+space" = "floating toggle";
+              "${mod}+Shift+space" = "floating toggle";
               "${mod}+Shift+e" = "layout split";
               "${mod}+Shift+s" = "layout stacking";
               "${mod}+Shift+w" = "layout tabbed";
+              "${mod}+r" = "mode resize";
+              "${mod}+Shift+v" = ''mode "system: [e]xit [r]eboot [p]oweroff [h]ibernate"'';
 
               "${mod}+${left}" = "focus left";
               "${mod}+${down}" = "focus down";
