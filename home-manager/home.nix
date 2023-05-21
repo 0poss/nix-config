@@ -9,7 +9,7 @@
     };
   };
 
-  colorScheme = nix-colors.colorSchemes.gruvbox-dark-medium;
+  colorScheme = nix-colors.colorSchemes.bright;
   fonts.fontconfig.enable = true;
 
   home = {
@@ -31,7 +31,7 @@
       swaylock
       swayidle
       wl-clipboard
-      wofi
+      kickoff
       waybar
       grim
       slurp
@@ -153,7 +153,7 @@
       right = "l";
 
       terminal = "kitty";
-      menu = "wofi --show run";
+      menu = "kickoff -c ~/kickoff/config.toml";
 
       startup = [ ];
 
@@ -235,6 +235,32 @@
             };
     };
   };
+
+  # Configure kickoff
+  home.file."kickoff/config.toml".text = with config.colorScheme; ''
+  prompt = ">  "
+  padding = 500
+  font_size = 32.0
+  fonts = [ "Iosevka Nerd Font" ]
+
+  [colors]
+  background = "#${colors.base00}aa"
+  prompt = "#${colors.base0C}ff"
+  text = "#${colors.base05}ff"
+  text_query = "#${colors.base06}ff"
+  text_selected = "#${colors.base0E}ff"
+
+  [keybindings]
+  # A list of available keys can be found here: https://docs.rs/crate/x11-keysymdef/0.2.0/source/src/keysym.json
+  paste = ["ctrl+v"]
+  execute = ["KP_Enter", "Return"]
+  delete = ["KP_Delete", "Delete", "BackSpace"]
+  delete_word = ["ctrl+KP_Delete", "ctrl+Delete", "ctrl+BackSpace"]
+  complete = ["Tab"]
+  nav_up = ["Up", "ctrl+p"]
+  nav_down = ["Down", "ctrl+n"]
+  exit = ["Escape"]
+  '';
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";

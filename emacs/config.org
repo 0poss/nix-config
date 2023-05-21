@@ -62,8 +62,7 @@ Replacement for `vim-sneak`.
 ** Change default stuff
 Disable startup message.
 #+begin_src emacs-lisp
-  (setq inhibit-startup-message t
-	initial-scratch-message "(find-file user-init-file)")
+  (setq inhibit-startup-message t)
 #+end_src
 
 Change the ugly block cursor.
