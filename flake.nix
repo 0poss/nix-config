@@ -32,7 +32,7 @@
 
         nixosConfigurations = {
           teletubbies = nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs; };
+            specialArgs = { inherit inputs overlays; };
             modules = [ ./nixos/configuration.nix ];
           };
         };

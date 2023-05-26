@@ -14,19 +14,19 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/58d92f68-3aec-4eb7-b6da-5e5e530f99dc";
+    { device = "/dev/disk/by-uuid/ea46305a-4381-4d41-b62f-2922c3110f70";
       fsType = "ext4";
     };
 
-  boot.initrd.luks.devices."luks-d78c1dbb-9afb-4843-acab-b015c170738b".device = "/dev/disk/by-uuid/d78c1dbb-9afb-4843-acab-b015c170738b";
+  boot.initrd.luks.devices."luks-a9a3aab0-0779-43c3-bba9-5ff892806ad0".device = "/dev/disk/by-uuid/a9a3aab0-0779-43c3-bba9-5ff892806ad0";
 
   fileSystems."/boot/efi" =
-    { device = "/dev/disk/by-uuid/5886-2C6C";
+    { device = "/dev/disk/by-uuid/97A2-B258";
       fsType = "vfat";
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/e580320d-6dbd-411f-bc80-9124aecd7b2d"; }
+    [ { device = "/dev/disk/by-uuid/11e15f0a-f3ca-457e-8de3-3f90515989d2"; }
     ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
@@ -40,6 +40,4 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  # high-resolution display
-  hardware.video.hidpi.enable = lib.mkDefault true;
 }
