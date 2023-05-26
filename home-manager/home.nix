@@ -26,14 +26,16 @@
       python3
       python3Packages.ipython
 
-      (nerdfonts.override { fonts = [ "Iosevka" ]; })
+      (nerdfonts.override { fonts = [ "Terminus" "Iosevka" ]; })
 
       swaylock
       swayidle
+      libnotify
       wl-clipboard
       kickoff
       grim
       slurp
+      pfetch
 
       (ida-free.overrideAttrs (oldAttrs: { meta.licence = null; }))
       hugo
@@ -50,13 +52,17 @@
     userEmail = "brnnrlxndr@gmail.com";
   };
 
+  services.mako = {
+    enable = true;
+  };
+
   #
   # Configure kitty
   #
   programs.kitty = {
     enable = true;
     font = {
-      name = "Iosevka Nerd Font";
+      name = "TerminessTTF Nerd Font";
       size = 12;
     };
     settings = with config.colorScheme; {
@@ -147,7 +153,9 @@
       terminal = "kitty";
       menu = "kickoff";
 
-      startup = [ ];
+      startup = [
+        { command = "mako"; always = true; }
+      ];
 
       input = {
         "*" = {
@@ -163,6 +171,16 @@
 
       gaps = {
         inner = 10;
+      };
+
+      colors = with config.colorScheme; {
+        focused = {
+          background = "#${colors.base00}";
+          border = "#${colors.base01}";
+          text = "#${colors.base05}";
+          indicator = "#${colors.base09}";
+          childBorder = "#${colors.base0C}";
+        };
       };
 
       bars = [
@@ -214,32 +232,33 @@
               terminal menu left down up right;
         in
           let ws = if "fr" == config.home.keyboard.layout
-                   then { "1" = "ampersand";
-                          "2" = "eacute";
-                          "3" = "quotedbl";
-                          "4" = "apostrophe";
-                          "5" = "parenleft";
-                          "6" = "egrave";
-                          "7" = "minus";
-                          "8" = "underscore";
-                          "9" = "ccedilla";
-                          "10" = "agrave"; }
+                   then { k1 = "ampersand";
+                          k2 = "eacute";
+                          k3 = "quotedbl";
+                          k4 = "apostrophe";
+                          k5 = "parenleft";
+                          k6 = "egrave";
+                          k7 = "minus";
+                          k8 = "underscore";
+                          k9 = "ccedilla";
+                          k10 = "agrave"; }
                    else listToAttrs
                      (map (k: nameValuePair (toString k) (toString (trivial.modulo k 10)))
                        (range 1 10));
           in
             {
               "${mod}+Shift+b" = "reload";
-              "${mod}+Shift+o" = "exec swaymsg exit";
 
               "${mod}+Return" = "exec ${terminal}";
               "${mod}+e" = "exec emacsclient --create-frame";
               "${mod}+d" = "exec ${menu}";
               "${mod}+Shift+q" = "kill";
 
+              "${mod}+o" = "split v";
+              "${mod}+p" = "split h";
               "${mod}+f" = "fullscreen";
               "${mod}+Shift+space" = "floating toggle";
-              "${mod}+Shift+e" = "layout split";
+              "${mod}+Shift+e" = "layout toggle split";
               "${mod}+Shift+s" = "layout stacking";
               "${mod}+Shift+w" = "layout tabbed";
               "${mod}+r" = "mode resize";
@@ -254,27 +273,27 @@
               "${mod}+Shift+${up}" = "move up";
               "${mod}+Shift+${right}" = "move right";
 
-              "${mod}+${ws."1"}" =  "workspace 1";
-              "${mod}+${ws."2"}" =  "workspace 2";
-              "${mod}+${ws."3"}" =  "workspace 3";
-              "${mod}+${ws."4"}" =  "workspace 4";
-              "${mod}+${ws."5"}" =  "workspace 5";
-              "${mod}+${ws."6"}" =  "workspace 6";
-              "${mod}+${ws."7"}" =  "workspace 7";
-              "${mod}+${ws."8"}" =  "workspace 8";
-              "${mod}+${ws."9"}" =  "workspace 9";
-              "${mod}+${ws."10"}" = "workspace 10";
+              "${mod}+${ws.k1}" =  "workspace 1";
+              "${mod}+${ws.k2}" =  "workspace 2";
+              "${mod}+${ws.k3}" =  "workspace 3";
+              "${mod}+${ws.k4}" =  "workspace 4";
+              "${mod}+${ws.k5}" =  "workspace 5";
+              "${mod}+${ws.k6}" =  "workspace 6";
+              "${mod}+${ws.k7}" =  "workspace 7";
+              "${mod}+${ws.k8}" =  "workspace 8";
+              "${mod}+${ws.k9}" =  "workspace 9";
+              "${mod}+${ws.k10}" = "workspace 10";
 
-              "${mod}+Shift+${ws."1"}" = "move container to workspace number 1";
-              "${mod}+Shift+${ws."2"}" = "move container to workspace number 2";
-              "${mod}+Shift+${ws."3"}" = "move container to workspace number 3";
-              "${mod}+Shift+${ws."4"}" = "move container to workspace number 4";
-              "${mod}+Shift+${ws."5"}" = "move container to workspace number 5";
-              "${mod}+Shift+${ws."6"}" = "move container to workspace number 6";
-              "${mod}+Shift+${ws."7"}" = "move container to workspace number 7";
-              "${mod}+Shift+${ws."8"}" = "move container to workspace number 8";
-              "${mod}+Shift+${ws."9"}" = "move container to workspace number 9";
-              "${mod}+Shift+${ws."10"}" = "move container to workspace number 10";
+              "${mod}+Shift+${ws.k1}" = "move container to workspace number 1";
+              "${mod}+Shift+${ws.k2}" = "move container to workspace number 2";
+              "${mod}+Shift+${ws.k3}" = "move container to workspace number 3";
+              "${mod}+Shift+${ws.k4}" = "move container to workspace number 4";
+              "${mod}+Shift+${ws.k5}" = "move container to workspace number 5";
+              "${mod}+Shift+${ws.k6}" = "move container to workspace number 6";
+              "${mod}+Shift+${ws.k7}" = "move container to workspace number 7";
+              "${mod}+Shift+${ws.k8}" = "move container to workspace number 8";
+              "${mod}+Shift+${ws.k9}" = "move container to workspace number 9";
+              "${mod}+Shift+${ws.k10}" = "move container to workspace number 10";
             };
     };
   };
@@ -288,25 +307,45 @@
     bars = {
       default = {
         settings.theme = with config.colorScheme; {
-          theme = "plain";
+          theme = "slick";
           overrides = {
             idle_bg = "#${colors.base00}";
             idle_fg = "#${colors.base05}";
           };
         };
-        blocks = [
-          { block = "memory";
-            format = " $icon $mem_used_percents.eng(w:2) ";
-            format_alt = " $icon_swap $swap_used_percents.eng(w:2) "; }
-          { block = "disk_space";
-            path = "/";
-            info_type = "available";
-            alert_unit = "GB";
-            interval = 20;
-            warning = 100;
-            alert = 40;
-            format = " $icon root: $available.eng(w:2) "; }
-        ];
+        blocks = let
+          notify = "notify-send -t 7500";
+        in
+          [
+            { block = "menu";
+              text = " Nix ";
+              items = [
+                { display = " Collect garbage ";
+                  cmd = ''${notify} "$(nix-collect-garbage -d 2>&1 | tail -n 2)"''; }
+                { display = " Optimize store ";
+                  cmd = ''${notify} "$(nix-store --optimise 2>&1 | tail -n 2)"''; }
+              ];
+            }
+            { block = "external_ip";
+              format = " $ip $country_code "; }
+            { block = "cpu"; }
+            { block = "memory";
+              format = " $icon $mem_used_percents.eng(w:2) ";
+              format_alt = " $icon_swap $swap_used_percents.eng(w:2) "; }
+            { block = "disk_space";
+              path = "/";
+              info_type = "available";
+              alert_unit = "GB";
+              interval = 20;
+              warning = 100;
+              alert = 40;
+              format = " $icon $path: $available/$total ";
+              click = [
+                { button = "right"; update = true; }
+                { button = "left"; update = true; }
+              ];
+            }
+          ];
       };
     };
   };
@@ -318,7 +357,7 @@
   prompt = ">  "
   padding = 500
   font_size = 32.0
-  fonts = [ "Iosevka Nerd Font" ]
+  fonts = [ "TerminessTTF Nerd Font" ]
 
   [colors]
   background = "#${colors.base00}aa"

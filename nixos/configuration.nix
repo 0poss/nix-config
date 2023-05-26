@@ -1,9 +1,17 @@
-{ inputs, lib, config, pkgs, ... }:
+{ pkgs, config, lib, inputs, overlays, ... }:
 
 {
+  nixpkgs = {
+    overlays = lib.attrValues overlays;
+    config = {
+      allowUnfree = false;
+    };
+  };
+
   imports =
-    [ # Include the results of the hardware scan.
+    [
       ./hardware-configuration.nix
+      ./virtualisation.nix
     ];
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -78,13 +86,6 @@
     };
   };
 
-  nixpkgs = {
-    overlays = [ ];
-    config = {
-      allowUnfree = false;
-    };
-  };
-
   # Enable CUPS to print documents.
   services.printing.enable = false;
 
@@ -116,31 +117,29 @@
     };
     ohMyZsh = {
       enable = true;
-      plugins = [ "git" "thefuck" ];
+      plugins = [ "git" ];
       theme = "robbyrussell";
     };
   };
 
   programs.adb.enable = true;
 
-  users.users.oposs = {
-    isNormalUser = true;
-    description = "oposs";
-    extraGroups = [ "networkmanager" "wheel" "adbusers" ];
-    packages = with pkgs; [ git thefuck ];
-    shell = pkgs.zsh;
-  };
-
   environment = with pkgs; {
-    systemPackages = [ vim ];
+    systemPackages = [
+      vim
+    ];
     shells = [ bash zsh ];
   };
 
-  services.udev.packages = [ pkgs.android-udev-rules ];
+  users.users.oposs = {
+    isNormalUser = true;
+    description = "oposs";
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" ];
+    packages = with pkgs; [ git ];
+    shell = pkgs.zsh;
+  };
 
-  fonts.fonts = with pkgs; [
-    dejavu_fonts
-  ];
+  services.udev.packages = [ pkgs.android-udev-rules ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
