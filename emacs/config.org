@@ -23,6 +23,32 @@ Enable line wrapping.
   (setq word-wrap t)
 #+end_src
 
+** Backups
+#+begin_src emacs-lisp
+(setq backup-directory-alist '(("" . "~/.emacs.d/backup/per-save"))
+      backup-by-copying t
+      make-backup-files t
+      version-control t
+      delete-old-versions t
+      delete-by-moving-to-trash t
+      kept-old-versions 6
+      kept-new-versions 9
+      auto-save-default t
+      auto-save-timeout 20
+      auto-save-interval 100
+      vc-make-backup-files t)
+
+(defun force-backup-of-buffer ()
+  (when (not buffer-backed-up)
+    (let ((backup-directory-alist '(("" . "~/.emacs.d/backup/per-session")))
+          (kept-new-versions 3))
+      (backup-buffer)))
+  (let ((buffer-backed-up nil))
+    (backup-buffer)))
+
+(add-hook 'before-save-hook  'force-backup-of-buffer)
+#+end_src
+
 * Loading packages
 ** Melpa
 #+begin_src emacs-lisp
@@ -216,7 +242,7 @@ Setup company for completion. This plugin is responsible for displaying the comp
 			company-idle-delay 0.0))
 #+end_src
 
-lsp-ui displays some annotations (types, errors, code actions, and maybe some other stuff that I'm not aware of) on the right of the screen when hovering a specific line or token.
+lsp-ui displays some annotations (types, errors, code actions, flycheck's annotations, and maybe some other stuff that I'm not aware of) on the right of the screen when hovering a specific line or token.
 #+begin_src emacs-lisp
   (use-package    lsp-ui
     :ensure       t
@@ -229,10 +255,23 @@ lsp-ui displays some annotations (types, errors, code actions, and maybe some ot
 			lsp-ui-sideline-delay 0.0))
 #+end_src
 
+Flycheck is an "on-the-fly syntax checking extension". Basically it others plugins such as lsp-ui and rustic integrate with flycheck in order to display errors and warnings.
+#+begin_src emacs-lisp
+  (use-package    flycheck
+    :ensure       t)
+#+end_src
+
 ** Languages
 *** Nix
 #+begin_src emacs-lisp
   (use-package    nix-mode
     :ensure       t
     :mode         "\\.nix\\'")
+#+end_src
+
+*** Rust
+#+begin_src emacs-lisp
+  (use-package    rustic
+    :ensure       t
+    :config       (setq rustic-format-on-save t))
 #+end_src

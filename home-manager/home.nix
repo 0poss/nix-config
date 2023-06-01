@@ -28,6 +28,7 @@
 
       (nerdfonts.override { fonts = [ "Terminus" "Iosevka" ]; })
 
+      bat
       swaylock
       swayidle
       libnotify
