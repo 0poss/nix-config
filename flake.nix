@@ -16,38 +16,29 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-colors, rust-overlay, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
-      forAllSystems = nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
+      inherit (self) outputs;
+
+      forEachSystem = nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
+
+      mkHome = modules: pkgs: home-manager.lib.homeManagerConfiguration {
+        inherit modules pkgs;
+        extraSpecialArgs = { inherit inputs outputs; };
+      };
     in
       rec {
         overlays = import ./overlays { inherit inputs; };
 
-        packages = forAllSystems (system:
-          let overlays = [ (import rust-overlay) ];
-              pkgs = import nixpkgs { inherit system overlays; };
-          in import ./pkgs { inherit pkgs; }
-        );
-
-        devShells = forAllSystems (system:
-          let overlays = [ (import rust-overlay) ];
-              pkgs = import nixpkgs { inherit system overlays; };
-          in import ./shell.nix { inherit pkgs; }
-        );
-
         nixosConfigurations = {
           teletubbies = nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs overlays; };
-            modules = [ ./nixos/configuration.nix ];
+            modules = [ ./nixos/hosts/teletubbies ];
           };
         };
 
         homeConfigurations = {
-          "oposs@teletubbies" = home-manager.lib.homeManagerConfiguration {
-            pkgs = import nixpkgs { system = "x86_64-linux"; };
-            extraSpecialArgs = { inherit nix-colors overlays; };
-            modules = [ ./home-manager/home.nix ];
-          };
+          "oposs@teletubbies" = mkHome [ ./home-manager/teletubbies.nix ] nixpkgs.legacyPackages."x86_64-linux";
         };
       };
 }
