@@ -3,6 +3,10 @@ let
   inherit (config.colorscheme) colors;
 in
 {
+  imports = [
+    ../base
+  ];
+
   programs.i3status-rust = {
     enable = true;
     package = pkgs.unstable.i3status-rust;
@@ -19,7 +23,8 @@ in
           notify = "notify-send -t 7500";
         in
           [
-            { block = "menu";
+            {
+              block = "menu";
               text = " Nix ";
               items = [
                 { display = " Collect garbage ";
@@ -28,13 +33,18 @@ in
                   cmd = ''${notify} "$(nix-store --optimise 2>&1 | tail -n 2)"''; }
               ];
             }
-            { block = "external_ip";
-              format = " $ip $country_code "; }
+            {
+              block = "external_ip";
+              format = " $ip $country_code ";
+            }
             { block = "cpu"; }
-            { block = "memory";
+            {
+              block = "memory";
               format = " $icon $mem_used_percents.eng(w:2) ";
-              format_alt = " $icon_swap $swap_used_percents.eng(w:2) "; }
-            { block = "disk_space";
+              format_alt = " $icon_swap $swap_used_percents.eng(w:2) ";
+            }
+            {
+             block = "disk_space";
               path = "/";
               info_type = "available";
               alert_unit = "GB";
@@ -46,6 +56,13 @@ in
                 { button = "right"; update = true; }
                 { button = "left"; update = true; }
               ];
+            }
+            {
+              block = "time";
+              interval = 5;
+              format = {
+                full = " $timestamp.datetime(f:'%a %Y-%m-%d %R %Z', l:en_US) ";
+                short = " $timestamp.datetime(f:%R) "; };
             }
           ];
       };

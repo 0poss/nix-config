@@ -3,13 +3,17 @@ let
   inherit (config.colorscheme) colors;
 in
 {
+  imports = [
+    ../base
+  ];
+
   programs.kitty = {
     enable = true;
     font = {
-      name = "TerminessTTF Nerd Font";
+      name = config.fontProfiles.monospace.family;
       size = 12;
     };
-    settings = with config.colorScheme; {
+    settings = {
       cursor_shape = "beam";
       scrollback_lines = 4000;
       scrollback_pager_history_size = 2048;
