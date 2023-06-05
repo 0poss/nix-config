@@ -11,10 +11,13 @@
   imports =
     [
       ./hardware-configuration.nix
-      ./virtualisation.nix
+      ../../base
+      ../../users
+
+      #"${inputs.nixpkgs}"/nixos/modules/profiles/hardened.nix
     ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_6_1_hardened;
 
   # Hardware support for Wayland sway
   hardware.opengl.enable = true;
@@ -57,27 +60,6 @@
   # Enable network manager applet
   programs.nm-applet.enable = true;
 
-  # Set your time zone.
-  time.timeZone = "Europe/Paris";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "fr_FR.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "fr_FR.UTF-8";
-    LC_IDENTIFICATION = "fr_FR.UTF-8";
-    LC_MEASUREMENT = "fr_FR.UTF-8";
-    LC_MONETARY = "fr_FR.UTF-8";
-    LC_NAME = "fr_FR.UTF-8";
-    LC_NUMERIC = "fr_FR.UTF-8";
-    LC_PAPER = "fr_FR.UTF-8";
-    LC_TELEPHONE = "fr_FR.UTF-8";
-    LC_TIME = "fr_FR.UTF-8";
-  };
-
-  # Configure console keymap
-  console.keyMap = "fr";
-
   nix = {
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
@@ -85,9 +67,6 @@
       experimental-features = [ "nix-command" "flakes" ];
     };
   };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = false;
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -122,8 +101,6 @@
     };
   };
 
-  programs.adb.enable = true;
-
   environment = with pkgs; {
     systemPackages = [
       vim
@@ -131,15 +108,25 @@
     shells = [ bash zsh ];
   };
 
-  users.users.oposs = {
-    isNormalUser = true;
-    description = "oposs";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" ];
-    packages = with pkgs; [ git ];
-    shell = pkgs.zsh;
-  };
+  # required to run chromium
+  security.chromiumSuidSandbox.enable = true;
 
-  services.udev.packages = [ pkgs.android-udev-rules ];
+  # enable firejail
+  programs.firejail.enable = true;
+
+  # create system-wide executables firefox and chromium
+  # that will wrap the real binaries so everything
+  # work out of the box.
+  programs.firejail.wrappedBinaries = {
+    firefox = {
+      executable = "${pkgs.lib.getBin pkgs.firefox}/bin/firefox";
+      profile = "${pkgs.firejail}/etc/firejail/firefox.profile";
+    };
+    chromium = {
+      executable = "${pkgs.lib.getBin pkgs.chromium}/bin/chromium";
+      profile = "${pkgs.firejail}/etc/firejail/chromium.profile";
+    };
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

@@ -1,0 +1,5 @@
+* NixOS flake configuration
+This is my full NixOS configuration.
+
+** Credits
+Thanks [Misterio77](https://github.com/Misterio77) for his nice [config](https://github.com/Misterio77/nix-config).
