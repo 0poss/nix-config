@@ -1,5 +1,9 @@
 { pkgs, ... }:
 {
+  imports = [
+    ../base
+  ];
+
   programs.chromium = {
     enable = true;
     # TODO : https://discourse.nixos.org/t/home-manager-ungoogled-chromium-with-extensions/15214

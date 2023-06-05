@@ -4,11 +4,11 @@ let
 in
 {
   imports = [
-    ./chromium.nix
-    ./kitty.nix
-
-    ./i3status-rust.nix
-    ./kickoff.nix
+    ../base
+    ../apps/chromium.nix
+    ../apps/kitty.nix
+    ../apps/i3status-rust.nix
+    ../apps/kickoff.nix
   ];
 
   wayland.windowManager.sway = {
@@ -56,7 +56,7 @@ in
       bars = [
         {
           statusCommand =
-            "${pkgs.i3status-rust} ~/.config/i3status-rust/config-default.toml";
+            "i3status-rs ~/.config/i3status-rust/config-default.toml";
           position = "bottom";
           colors = {
             background = "#${colors.base00}";

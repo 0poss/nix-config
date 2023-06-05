@@ -3,11 +3,17 @@ let
   inherit (config.colorscheme) colors;
 in
 {
+  imports = [
+    ../base
+  ];
+
+  home.packages = with pkgs; [ kickoff ];
+
   home.file.".config/kickoff/config.toml".text = ''
   prompt = ">  "
   padding = 500
   font_size = 32.0
-  fonts = [ "TerminessTTF Nerd Font" ]
+  fonts = [ "${config.fontProfiles.monospace.family}" ]
 
   [colors]
   background = "#${colors.base00}aa"

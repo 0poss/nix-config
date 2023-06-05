@@ -6,7 +6,7 @@ in
   imports = [
     inputs.nix-colors.homeManagerModules.default
     ../features/cli
-  ];
+  ] ++ (builtins.attrValues (import ../options));
 
   # Configure nixpkgs.
   nixpkgs = {
