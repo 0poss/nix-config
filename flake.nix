@@ -19,9 +19,6 @@
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
       inherit (self) outputs;
-
-      forEachSystem = nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
-
       mkHome = modules: pkgs: home-manager.lib.homeManagerConfiguration {
         inherit modules pkgs;
         extraSpecialArgs = { inherit inputs outputs; };
@@ -38,7 +35,27 @@
         };
 
         homeConfigurations = {
-          "oposs@teletubbies" = mkHome [ ./home-manager/teletubbies.nix ] nixpkgs.legacyPackages."x86_64-linux";
+          "oposs@teletubbies" = mkHome [ ./home-manager/hosts/teletubbies ] nixpkgs.legacyPackages."x86_64-linux";
+        };
+
+        homeModules = {
+          base = import ./home-manager/base;
+          features = {
+            cli = import ./home-manager/features/cli;
+            desktop = {
+              base = import ./home-manager/features/desktop/base;
+              apps = {
+                chromium = import ./home-manager/features/desktop/apps/chromium.nix;
+                i3status-rust = import ./home-manager/features/desktop/apps/i3status-rust.nix;
+                kickoff = import ./home-manager/features/desktop/apps/kickoff.nix;
+                kitty = import ./home-manager/features/desktop/apps/kitty.nix;
+              };
+              wm = {
+                sway = import ./home-manager/features/desktop/wm/sway;
+              };
+            };
+            emacs = import ./home-manager/features/emacs;
+          };
         };
       };
 }

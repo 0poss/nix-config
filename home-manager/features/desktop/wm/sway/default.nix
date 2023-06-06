@@ -1,14 +1,15 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, outputs, ... }:
 let
-  inherit (config.colorscheme) colors;
+  inherit (config.colorScheme) colors;
+  inherit (outputs) homeModules;
 in
 {
-  imports = [
-    ../base
-    ../apps/chromium.nix
-    ../apps/kitty.nix
-    ../apps/i3status-rust.nix
-    ../apps/kickoff.nix
+  imports = with homeModules; [
+    features.desktop.base
+    features.desktop.apps.chromium
+    features.desktop.apps.kitty
+    features.desktop.apps.i3status-rust
+    features.desktop.apps.kickoff
   ];
 
   wayland.windowManager.sway = {
