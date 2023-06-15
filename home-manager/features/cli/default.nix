@@ -1,5 +1,6 @@
 { pkgs, ... }: {
   imports = [
+    ./bat.nix
     ./git.nix
     ./pfetch.nix
   ];

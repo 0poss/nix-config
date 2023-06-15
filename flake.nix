@@ -18,44 +18,26 @@
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
-      inherit (self) outputs;
+      overlays = import ./overlays { inherit inputs; };
+      nixosModules = import ./nixos;
+      homeModules = import ./home-manager;
       mkHome = modules: pkgs: home-manager.lib.homeManagerConfiguration {
         inherit modules pkgs;
-        extraSpecialArgs = { inherit inputs outputs; };
+        extraSpecialArgs = { inherit inputs homeModules overlays; };
+      };
+      mkNixOS = modules: nixpkgs.lib.nixosSystem {
+        inherit modules;
+        specialArgs = { inherit inputs nixosModules overlays; };
       };
     in
-      rec {
-        overlays = import ./overlays { inherit inputs; };
-
-        nixosConfigurations = {
-          teletubbies = nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs overlays; };
-            modules = [ ./nixos/hosts/teletubbies ];
-          };
-        };
-
-        homeConfigurations = {
-          "oposs@teletubbies" = mkHome [ ./home-manager/hosts/teletubbies ] nixpkgs.legacyPackages."x86_64-linux";
-        };
-
-        homeModules = {
-          base = import ./home-manager/base;
-          features = {
-            cli = import ./home-manager/features/cli;
-            desktop = {
-              base = import ./home-manager/features/desktop/base;
-              apps = {
-                chromium = import ./home-manager/features/desktop/apps/chromium.nix;
-                i3status-rust = import ./home-manager/features/desktop/apps/i3status-rust.nix;
-                kickoff = import ./home-manager/features/desktop/apps/kickoff.nix;
-                kitty = import ./home-manager/features/desktop/apps/kitty.nix;
-              };
-              wm = {
-                sway = import ./home-manager/features/desktop/wm/sway;
-              };
-            };
-            emacs = import ./home-manager/features/emacs;
-          };
-        };
+    {
+      nixosConfigurations = {
+        teletubbies = mkNixOS [ ./nixos/hosts/teletubbies ];
+        mini-newton = mkNixOS [ ./nixos/hosts/mini-newton ];
       };
+
+      homeConfigurations = {
+        "oposs" = mkHome [ ./home-manager/hosts/teletubbies ] nixpkgs.legacyPackages."x86_64-linux";
+      };
+    };
 }

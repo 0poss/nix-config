@@ -1,7 +1,4 @@
-{ inputs, outputs, ... }:
-let
-  inherit (outputs) homeModules;
-in
+{ inputs, homeModules, ... }:
 {
   imports = with homeModules; [
     base

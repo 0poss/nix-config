@@ -3,9 +3,7 @@ let
   inherit (config.colorscheme) colors;
 in
 {
-  imports = [
-    ../base
-  ];
+  imports = [ ];
 
   programs.i3status-rust = {
     enable = true;
