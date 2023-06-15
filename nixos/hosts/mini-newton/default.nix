@@ -7,12 +7,11 @@
     nixosModules.features.pipewire
     nixosModules.features.wayland
     nixosModules.features.wireless
+    nixosModules.kernels.hardened
 
     ./hardware-configuration.nix
     ./disk.nix
   ];
-
-  boot.kernelPackages = pkgs.linuxPackages_6_1_hardened;
 
   networking.hostName = "mini-newton";
 
