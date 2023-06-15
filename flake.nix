@@ -32,12 +32,12 @@
     in
     {
       nixosConfigurations = {
-        teletubbies = mkNixOS [ ./nixos/hosts/teletubbies ];
-        mini-newton = mkNixOS [ ./nixos/hosts/mini-newton ];
+        teletubbies = mkNixOS [ nixosModules.hosts.teletubbies ];
+        mini-newton = mkNixOS [ nixosModules.hosts.mini-newton ];
       };
 
       homeConfigurations = {
-        "oposs" = mkHome [ ./home-manager/hosts/teletubbies ] nixpkgs.legacyPackages."x86_64-linux";
+        "oposs" = mkHome [ homeModules.users.oposs ] nixpkgs.legacyPackages."x86_64-linux";
       };
     };
 }
