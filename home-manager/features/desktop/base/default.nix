@@ -1,4 +1,0 @@
-{ config, ... }:
-{
-  fontProfiles.enable = true;
-}

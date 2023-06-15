@@ -11,6 +11,6 @@
     ];
 
     packages = with pkgs; [ home-manager ];
-    shell = pkgs.fish;
+    shell = pkgs.zsh;
   };
 }

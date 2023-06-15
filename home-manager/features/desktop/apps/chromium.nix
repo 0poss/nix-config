@@ -1,8 +1,6 @@
 { pkgs, ... }:
 {
-  imports = [
-    ../base
-  ];
+  imports = [ ];
 
   programs.chromium = {
     enable = true;

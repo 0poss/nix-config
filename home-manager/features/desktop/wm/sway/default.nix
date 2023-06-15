@@ -1,11 +1,9 @@
-{ pkgs, config, lib, outputs, ... }:
+{ pkgs, config, lib, homeModules, ... }:
 let
   inherit (config.colorScheme) colors;
-  inherit (outputs) homeModules;
 in
 {
   imports = with homeModules; [
-    features.desktop.base
     features.desktop.apps.chromium
     features.desktop.apps.kitty
     features.desktop.apps.i3status-rust

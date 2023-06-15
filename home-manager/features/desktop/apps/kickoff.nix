@@ -3,9 +3,9 @@ let
   inherit (config.colorscheme) colors;
 in
 {
-  imports = [
-    ../base
-  ];
+  imports = [ ];
+
+  fontProfiles.enable = true;
 
   home.packages = with pkgs; [ kickoff ];
 

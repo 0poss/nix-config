@@ -3,9 +3,9 @@ let
   inherit (config.colorscheme) colors;
 in
 {
-  imports = [
-    ../base
-  ];
+  imports = [ ];
+
+  fontProfiles.enable = true;
 
   programs.kitty = {
     enable = true;

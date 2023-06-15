@@ -1,4 +1,4 @@
-{ inputs, pkgs, lib, config, outputs, ... }:
+{ inputs, pkgs, lib, config, overlays, ... }:
 let
   inherit (inputs.nix-colors) colorSchemes;
 in
@@ -10,7 +10,7 @@ in
 
   # Configure nixpkgs.
   nixpkgs = {
-    overlays = lib.attrValues outputs.overlays;
+    overlays = lib.attrValues overlays;
     config.allowUnfree = false;
   };
 
