@@ -25,7 +25,7 @@ in
   home = {
     username = lib.mkDefault "oposs";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
-    stateVersion = lib.mkDefault "22.11";
+    stateVersion = lib.mkDefault "23.05";
 
     keyboard.layout = lib.mkDefault "fr";
   };
