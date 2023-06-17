@@ -19,6 +19,12 @@
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
       overlays = import ./overlays { inherit inputs; };
+
+      overlayedPkgs = import nixpkgs {
+        system = "x86_64-linux";
+        overlays = builtins.attrValues overlays;
+      };
+
       nixosModules = import ./nixos;
       homeModules = import ./home-manager;
       mkHome = modules: pkgs: home-manager.lib.homeManagerConfiguration {
@@ -31,6 +37,8 @@
       };
     in
     {
+      inherit overlays;
+
       nixosConfigurations = {
         teletubbies = mkNixOS [ nixosModules.hosts.teletubbies ];
         mini-newton = mkNixOS [ nixosModules.hosts.mini-newton ];
