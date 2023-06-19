@@ -10,7 +10,7 @@
       "wheel"
     ];
 
-    packages = with pkgs; [ home-manager ];
+    packages = with pkgs; [ ];
     shell = pkgs.zsh;
   };
 }
