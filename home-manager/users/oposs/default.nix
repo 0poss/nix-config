@@ -1,4 +1,4 @@
-{ inputs, homeModules, ... }:
+{ homeModules, ... }:
 {
   imports = with homeModules; [
     base
@@ -6,4 +6,8 @@
     features.emacs
     features.desktop.wm.sway
   ];
+
+  home.sessionVariables = {
+    EDITOR = "emacs -nw";
+  };
 }

@@ -7,7 +7,7 @@
     nixosModules.features.pipewire
     nixosModules.features.wayland
     nixosModules.features.wireless
-    nixosModules.kernels.hardened
+    nixosModules.profiles.hardened
 
     ./hardware-configuration.nix
     ./disk.nix

@@ -1,0 +1,3 @@
+{
+  hardened = import ./hardened;
+}
