@@ -1,7 +1,7 @@
 {
   base = import ./base;
   features = import ./features;
-  kernels = import ./kernels;
+  profiles = import ./profiles;
   hosts = import ./hosts;
   users = import ./users;
 }

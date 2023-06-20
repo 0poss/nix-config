@@ -1,3 +1,0 @@
-{
-  hardened = import ./hardened.nix;
-}
