@@ -1,4 +1,4 @@
-{ homeModules, pkgs, ... }:
+{ inputs, homeModules, pkgs, ... }:
 {
   imports = with homeModules; [
     base

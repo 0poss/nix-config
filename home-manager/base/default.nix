@@ -18,7 +18,7 @@ in
     home-manager.enable = true;
     git.enable = true;
     vim.enable = true;
-    helix.enable = true;
+    emacs.enable = true;
   };
 
   # Default home-manager configuration.
@@ -26,7 +26,6 @@ in
     username = lib.mkDefault "oposs";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
     stateVersion = lib.mkDefault "23.05";
-
     keyboard.layout = lib.mkDefault "fr";
   };
 
