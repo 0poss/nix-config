@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, nixosModules, overlays, ... }:
+{ pkgs, nixosModules, ... }:
 {
   imports = [
     nixosModules.base

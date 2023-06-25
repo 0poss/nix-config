@@ -1,7 +1,7 @@
-{ inputs, homeModules, pkgs, ... }:
+{ homeConfFiles, ... }:
 {
-  imports = with homeModules; [
-    base
+  imports = with homeConfFiles; [
+    users.base
     features.cli
     features.emacs
     features.desktop.wm.sway

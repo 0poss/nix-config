@@ -22,27 +22,28 @@
     let
       overlays = import ./overlays { inherit inputs; };
 
-      nixosModules = import ./nixos;
-      homeModules = import ./home-manager;
+      nixosConfFiles = import ./nixos;
+      homeConfFiles = import ./home-manager;
+
       mkHome = modules: pkgs: home-manager.lib.homeManagerConfiguration {
         inherit modules pkgs;
-        extraSpecialArgs = { inherit inputs homeModules overlays; };
+        extraSpecialArgs = { inherit inputs homeConfFiles overlays; };
       };
       mkNixOS = modules: nixpkgs.lib.nixosSystem {
         inherit modules;
-        specialArgs = { inherit inputs nixosModules overlays; };
+        specialArgs = { inherit inputs nixosConfFiles overlays; };
       };
     in
     {
       inherit overlays;
 
       nixosConfigurations = {
-        "teletubbies" = mkNixOS [ nixosModules.hosts.teletubbies ];
-        "mini-newton" = mkNixOS [ nixosModules.hosts.mini-newton ];
+        "nixos-teletubbies" = mkNixOS [ nixosConfFiles.hosts.teletubbies ];
+        "nixos-mini-newton" = mkNixOS [ nixosConfFiles.hosts.mini-newton ];
       };
 
       homeConfigurations = {
-        "home-oposs" = mkHome [ homeModules.users.oposs ] nixpkgs.legacyPackages."x86_64-linux";
+        "home-oposs" = mkHome [ homeConfFiles.users.oposs ] nixpkgs.legacyPackages."x86_64-linux";
       };
     };
 }

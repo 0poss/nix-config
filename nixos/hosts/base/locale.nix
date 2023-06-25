@@ -1,4 +1,3 @@
-{ lib, config, ... }:
 {
   console.keyMap = "fr";
 
