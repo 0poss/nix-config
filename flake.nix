@@ -14,6 +14,8 @@
     nix-colors.url = "github:misterio77/nix-colors";
 
     rust-overlay.url = "github:oxalica/rust-overlay";
+
+    impermanence.url = "github:nix-community/impermanence";
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
