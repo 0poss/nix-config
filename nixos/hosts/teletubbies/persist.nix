@@ -8,6 +8,7 @@
     "/persist" = {
       directories = [
         "/etc/nixos"
+        "/var/log"
       ];
 
       users.oposs = {
@@ -16,6 +17,7 @@
           "Pictures"
           ".config"
           { directory = ".ssh"; mode = "0700"; }
+          { directory = ".gnupg"; mode = "0700"; }
         ];
       };
     };

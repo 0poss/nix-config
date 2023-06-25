@@ -3,8 +3,6 @@
 with lib;
 
 {
-  imports = [ ];
-
   boot = {
     kernelPackages = pkgs.linuxPackages_6_1_hardened;
     kernelParams = [

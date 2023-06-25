@@ -1,5 +1,4 @@
 {
-  base = import ./base;
   features = import ./features;
   profiles = import ./profiles;
   hosts = import ./hosts;

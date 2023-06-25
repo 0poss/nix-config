@@ -1,6 +1,8 @@
-{ pkgs, nixosModules, ... }:
+{ pkgs, nixosConfFiles, ... }:
 {
-  imports = [ nixosModules.users.base ];
+  imports = with nixosConfFiles; [
+    users.base
+  ];
 
   users.users.oposs = {
     isNormalUser = true;

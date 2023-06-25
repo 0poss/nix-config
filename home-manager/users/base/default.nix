@@ -1,12 +1,12 @@
-{ inputs, homeModules, pkgs, lib, config, overlays, ... }:
+{ inputs, homeConfFiles, pkgs, lib, config, overlays, ... }:
 let
   inherit (inputs.nix-colors) colorSchemes;
 in
 {
-  imports = with homeModules; [
-    inputs.nix-colors.homeManagerModules.default
+  imports = with homeConfFiles; [
     features.cli
-  ] ++ (builtins.attrValues homeModules.options);
+    inputs.nix-colors.homeManagerModules.default
+  ] ++ (builtins.attrValues homeConfFiles.options);
 
   # Configure nixpkgs.
   nixpkgs = {
@@ -19,6 +19,7 @@ in
     git.enable = true;
     vim.enable = true;
     emacs.enable = true;
+    gpg.enable = true;
   };
 
   # Default home-manager configuration.

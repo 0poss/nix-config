@@ -1,12 +1,12 @@
-{ pkgs, lib, inputs, nixosModules, overlays, ... }:
+{ pkgs, nixosConfFiles, ... }:
 {
-  imports = [
-    nixosModules.base
-    nixosModules.users.oposs
-    nixosModules.features.nixpkgs
-    nixosModules.features.wayland
-    nixosModules.features.nixpkgs
-    nixosModules.features.wireless
+  imports = with nixosConfFiles; [
+    hosts.base
+    users.oposs
+    features.nixpkgs
+    features.wayland
+    features.nixpkgs
+    features.wireless
 
     ./hardware-configuration.nix
     ./ephemeral-btrfs.nix
@@ -16,7 +16,7 @@
   networking.hostName = "teletubbies";
 
   environment = with pkgs; {
-    systemPackages = [ emacs ];
+    systemPackages = [ git emacs ];
     shells = [ bash zsh ];
   };
 
