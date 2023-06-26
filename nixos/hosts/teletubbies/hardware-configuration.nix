@@ -24,7 +24,14 @@ in
       fsType = "vfat";
     };
 
-  swapDevices = [ ];
+  swapDevices = [
+    { device = "/dev/disk/by-partuuid/9760dc3d-5f76-1646-bb18-351bd1f1c780";
+      randomEncryption = {
+        cipher = "serpent-xts-plain64";
+        enable = true;
+      };
+    }
+  ];
 
   networking.useDHCP = lib.mkDefault true;
 
