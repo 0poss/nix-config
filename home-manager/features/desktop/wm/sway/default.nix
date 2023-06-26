@@ -1,14 +1,17 @@
-{ pkgs, config, lib, homeConfFiles, ... }:
+{ config, lib, homeConfFiles, ... }:
 let
   inherit (config.colorScheme) colors;
 in
 {
   imports = with homeConfFiles; [
+    features.emacs
     features.desktop.apps.chromium
     features.desktop.apps.kitty
     features.desktop.apps.i3status-rust
     features.desktop.apps.kickoff
   ];
+
+  services.emacs.enable = true;
 
   wayland.windowManager.sway = {
     enable = true;
