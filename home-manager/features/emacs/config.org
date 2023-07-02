@@ -190,8 +190,7 @@ Display minibuffer completion options.
     (use-package    vertico-posframe
       :ensure       t
       :config
-      (vertico-posframe-mode t)
-      (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)))
+      (vertico-posframe-mode t)))
 #+end_src
 
 Better completion style.
