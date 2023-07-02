@@ -25,28 +25,28 @@ Enable line wrapping.
 
 ** Backups
 #+begin_src emacs-lisp
-(setq backup-directory-alist '(("" . "~/.emacs.d/backup/per-save"))
-      backup-by-copying t
-      make-backup-files t
-      version-control t
-      delete-old-versions t
-      delete-by-moving-to-trash t
-      kept-old-versions 6
-      kept-new-versions 9
-      auto-save-default t
-      auto-save-timeout 20
-      auto-save-interval 100
-      vc-make-backup-files t)
+  (setq backup-directory-alist '(("" . "~/.emacs.d/backup/per-save"))
+	backup-by-copying t
+	make-backup-files t
+	version-control t
+	delete-old-versions t
+	delete-by-moving-to-trash t
+	kept-old-versions 6
+	kept-new-versions 9
+	auto-save-default t
+	auto-save-timeout 20
+	auto-save-interval 100
+	vc-make-backup-files t)
 
-(defun force-backup-of-buffer ()
-  (when (not buffer-backed-up)
-    (let ((backup-directory-alist '(("" . "~/.emacs.d/backup/per-session")))
-          (kept-new-versions 3))
+  (defun force-backup-of-buffer ()
+    (when (not buffer-backed-up)
+      (let ((backup-directory-alist '(("" . "~/.emacs.d/backup/per-session")))
+	    (kept-new-versions 3))
+	(backup-buffer)))
+    (let ((buffer-backed-up nil))
       (backup-buffer)))
-  (let ((buffer-backed-up nil))
-    (backup-buffer)))
 
-(add-hook 'before-save-hook  'force-backup-of-buffer)
+  (add-hook 'before-save-hook  'force-backup-of-buffer)
 #+end_src
 
 * Loading packages
@@ -78,7 +78,7 @@ Replacement for `vim-sneak`.
 #+end_src
 
 ** Massive edits
-`M-s l` for multiple cursors.
+~M-s l~ for multiple cursors.
 #+begin_src emacs-lisp
   (use-package    multiple-cursors
     :ensure       t
@@ -89,8 +89,9 @@ Replacement for `vim-sneak`.
 #+begin_src emacs-lisp
   (use-package    evil-numbers
     :ensure       t
-    :bind         ("C-c C-a" . evil-numbers/inc-at-pt)
-                  ("C-c C-x" . evil-numbers/dec-at-pt))
+    :bind
+    ("C-c C-a" . evil-numbers/inc-at-pt)
+    ("C-c C-x" . evil-numbers/dec-at-pt))
 #+end_src
 
 * Interface enhancement
@@ -152,7 +153,7 @@ Nice, very lightweight, mode line.
 			  (feebleline-file-modified-star  :face font-lock-warning-face :post "")
 			  (feebleline-git-branch          :face feebleline-git-face :pre " : ")
 			  (feebleline-project-name        :align right)))
-                  (feebleline-mode 1))
+    (feebleline-mode 1))
 #+end_src
 
 ** Window management
@@ -174,8 +175,9 @@ Display shortcut completion options.
 #+begin_src emacs-lisp
   (use-package    which-key
     :ensure       t
-    :config       (which-key-mode t)
-                  (setq which-key-idle-delay 0.75))
+    :config
+    (which-key-mode t)
+    (setq which-key-idle-delay 0.75))
 #+end_src
 
 Display minibuffer completion options.
@@ -183,6 +185,22 @@ Display minibuffer completion options.
   (use-package    vertico
     :ensure       t
     :config       (vertico-mode t))
+
+  (when (display-graphic-p)
+    (use-package    vertico-posframe
+      :ensure       t
+      :config
+      (vertico-posframe-mode t)
+      (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)))
+#+end_src
+
+Better completion style.
+#+begin_src emacs-lisp
+  (use-package    orderless
+    :ensure       t
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 
 Annotate vertico's output (with corresponding keybindings for example).
@@ -205,8 +223,9 @@ Easy config nice config.
 #+begin_src emacs-lisp
   (use-package    org-modern
     :ensure       t
-    :hook         (org-mode . org-modern-mode)
-                  (org-mode . visual-line-mode))
+    :hook
+    (org-mode . org-modern-mode)
+    (org-mode . visual-line-mode))
 #+end_src
 
 * Development
@@ -246,11 +265,10 @@ lsp-ui displays some annotations (types, errors, code actions, flycheck's annota
 #+begin_src emacs-lisp
   (use-package    lsp-ui
     :ensure       t
-    ; Fix line-wrapping bug in lsp-ui-sideline
+					  ; Fix line-wrapping bug in lsp-ui-sideline
     :custom-face  (markdown-code-face ((t (:inherit default))))
     :config       (setq lsp-ui-sideline-show-diagnostics 0
 			lsp-ui-sideline-show-hover 0
-			lsp-ui-sideline-show-code-action 0
 			lsp-ui-sideline-update-mode 'line
 			lsp-ui-sideline-delay 0.0))
 #+end_src

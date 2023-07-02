@@ -1,7 +1,7 @@
 (setq custom-file (concat user-emacs-directory "custom.el"))
 
 (setq config-file (concat user-emacs-directory "config.org"))
-(org-babel-load-file config-file)
+(org-babel-load-file config-file t)
 
 (when (file-exists-p custom-file)
   (load custom-file))
