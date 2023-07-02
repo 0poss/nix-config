@@ -9,7 +9,7 @@
     ohMyZsh = {
       enable = true;
       plugins = [ "git" ];
-      theme = "robbyrussell";
+      theme = "blinks";
     };
   };
 }

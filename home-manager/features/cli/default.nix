@@ -3,7 +3,6 @@
     ./bat.nix
     ./git.nix
     ./pfetch.nix
-    ./zsh.nix
   ];
 
   home.packages = with pkgs; [
