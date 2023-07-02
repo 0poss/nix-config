@@ -1,13 +1,13 @@
-{ pkgs, nixosModules, ... }:
+{ pkgs, nixosConfFiles, ... }:
 {
   imports = [
-    nixosModules.base
-    nixosModules.users.oposs
-    nixosModules.features.nixpkgs
-    nixosModules.features.pipewire
-    nixosModules.features.wayland
-    nixosModules.features.wireless
-    nixosModules.profiles.hardened
+    nixosConfFiles.hosts.base
+    nixosConfFiles.users.oposs
+    nixosConfFiles.features.nixpkgs
+    nixosConfFiles.features.pipewire
+    nixosConfFiles.features.wayland
+    nixosConfFiles.features.wireless
+    nixosConfFiles.profiles.hardened
 
     ./hardware-configuration.nix
     ./disk.nix
