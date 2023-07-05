@@ -1,7 +1,7 @@
 { homeConfFiles, ... }:
 {
   imports = with homeConfFiles; [
-    users.base
+    homes.base
     features.cli
     features.emacs
     features.desktop.wm.sway
