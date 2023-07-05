@@ -9,6 +9,7 @@ in
     features.desktop.apps.kitty
     features.desktop.apps.i3status-rust
     features.desktop.apps.kickoff
+    features.desktop.wallpapers
   ];
 
   services.emacs.enable = true;
@@ -38,6 +39,12 @@ in
       input = {
         "*" = {
           xkb_layout = config.home.keyboard.layout;
+        };
+      };
+
+      output = {
+        "*" = {
+          bg = ''"'' + (builtins.toString config.selectedWallpaper) + ''" fill'';
         };
       };
 

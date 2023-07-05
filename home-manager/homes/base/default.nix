@@ -1,12 +1,12 @@
-{ inputs, homeConfFiles, pkgs, lib, config, overlays, ... }:
+{ inputs, homeConfFiles, lib, config, overlays, ... }:
 let
   inherit (inputs.nix-colors) colorSchemes;
 in
 {
   imports = with homeConfFiles; [
-    features.cli
     inputs.nix-colors.homeManagerModules.default
-  ] ++ (builtins.attrValues homeConfFiles.options);
+    features.cli
+  ];
 
   # Configure nixpkgs.
   nixpkgs = {

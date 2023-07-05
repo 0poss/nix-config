@@ -1,9 +1,9 @@
-{ pkgs, config, ... }:
+{ pkgs, config, homeConfFiles, ... }:
 let
   inherit (config.colorscheme) colors;
 in
 {
-  imports = [ ];
+  imports = with homeConfFiles; [ features.fonts ];
 
   fontProfiles.enable = true;
 

@@ -43,7 +43,7 @@
       };
 
       homeConfigurations = {
-        "home-oposs" = mkHome [ homeConfFiles.users.oposs ] nixpkgs.legacyPackages."x86_64-linux";
+        "home-oposs" = mkHome [ homeConfFiles.homes.oposs ] nixpkgs.legacyPackages."x86_64-linux";
       };
     };
 }
