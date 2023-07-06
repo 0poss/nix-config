@@ -18,6 +18,7 @@ in
       scrollback_lines = 4000;
       scrollback_pager_history_size = 2048;
       window_padding_width = 5;
+      enable_audio_bell = "no";
       foreground = "#${colors.base05}";
       background = "#${colors.base00}";
       selection_background = "#${colors.base05}";
