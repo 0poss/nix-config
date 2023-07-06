@@ -80,7 +80,7 @@ in
         }
       ];
 
-      modes = with lib;
+      modes =
         let mod = config.wayland.windowManager.sway.config.modifier;
             inherit (config.wayland.windowManager.sway.config)
               terminal menu left down up right;
@@ -175,6 +175,10 @@ in
               "${mod}+Shift+${ws.k9}" = "move container to workspace number 9";
               "${mod}+Shift+${ws.k10}" = "move container to workspace number 10";
             };
+      defaultWorkspace = "workspace number 1";
     };
+
+    extraConfig = ''
+    '';
   };
 }
