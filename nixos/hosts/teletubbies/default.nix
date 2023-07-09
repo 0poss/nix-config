@@ -2,6 +2,8 @@
 {
   imports = with nixosConfFiles; [
     hosts.base
+    profiles.hardened
+
     users.oposs
     features.nixpkgs
     features.wayland
