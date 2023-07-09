@@ -8,7 +8,7 @@ with lib;
     # Basically linuxPackages_X_X_hardened but with ignoreConfigErrors = true and compiled with clang.
     kernelPackages = pkgs.linuxPackagesFor (
       pkgs.linux_6_1_hardened.override {
-        #stdenv = pkgs.llvmPackages_11.stdenv;
+        stdenv = pkgs.llvmPackages_11.stdenv;
         ignoreConfigErrors = true;
       });
 
