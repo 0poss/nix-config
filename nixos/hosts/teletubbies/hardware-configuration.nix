@@ -22,8 +22,9 @@ in
 
   boot.initrd.luks.devices."${hostName}-opened".device = "/dev/disk/by-label/${hostName}-crypt";
 
-  fileSystems."/boot/efi" =
-    { device = "/dev/disk/by-label/NIXOS-BOOT";
+  fileSystems."/boot" =
+    {
+      device = "/dev/disk/by-label/NIXOS-BOOT";
       fsType = "vfat";
     };
 
