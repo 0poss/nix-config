@@ -12,7 +12,14 @@ in
     efi.canTouchEfiVariables = true;
   };
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "usbhid" "sd_mod" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usb_storage"
+    "usbhid"
+    "sd_mod"
+  ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [
     "kvm-intel"
@@ -29,7 +36,8 @@ in
     };
 
   swapDevices = [
-    { device = "/dev/disk/by-partuuid/9760dc3d-5f76-1646-bb18-351bd1f1c780";
+    {
+      device = "/dev/disk/by-partuuid/9760dc3d-5f76-1646-bb18-351bd1f1c780";
       randomEncryption = {
         cipher = "serpent-xts-plain64";
         enable = true;
