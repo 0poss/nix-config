@@ -1,4 +1,4 @@
-{ pkgs, nixosConfFiles, ... }:
+{ pkgs, lib, config, nixosConfFiles, ... }:
 {
   imports = with nixosConfFiles; [
     users.base
@@ -10,7 +10,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-    ];
+    ] ++ lib.optional (config.virtualisation.libvirtd.enable) "libvirtd";
 
     packages = with pkgs; [ home-manager git ];
     shell = pkgs.zsh;
