@@ -1,24 +1,22 @@
 { pkgs, nixosConfFiles, ... }:
 {
-  imports = with nixosConfFiles; [
-    hosts.base
-    profiles.hardened
-
-    users.oposs
-    features.nixpkgs
-    features.wayland
-    features.nixpkgs
-    features.wireless
+  imports = [
+    nixosConfFiles.hosts.base
+    nixosConfFiles.users.oposs
+    nixosConfFiles.features.nixpkgs
+    nixosConfFiles.features.pipewire
+    nixosConfFiles.features.wayland
+    nixosConfFiles.features.wireless
+    nixosConfFiles.profiles.hardened
 
     ./hardware-configuration.nix
-    ./ephemeral-btrfs.nix
-    ./persist.nix
+    ./disk.nix
   ];
 
   networking.hostName = "mini-newton";
 
   environment = with pkgs; {
-    systemPackages = [ git emacs ];
+    systemPackages = [ vim ];
     shells = [ bash zsh ];
   };
 
