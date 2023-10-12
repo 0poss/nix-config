@@ -31,7 +31,7 @@
       };
       mkNixOS = modules: nixpkgs.lib.nixosSystem {
         inherit modules;
-        specialArgs = { inherit inputs nixosConfFiles overlays; };
+        specialArgs = { inherit inputs nixosConfFiles homeConfFiles overlays; };
       };
     in
     {
