@@ -83,7 +83,7 @@ in
       modes =
         let mod = config.wayland.windowManager.sway.config.modifier;
             inherit (config.wayland.windowManager.sway.config)
-              terminal menu left down up right;
+              left down up right;
         in
           {
             "system: [e]xit [r]eboot [p]oweroff [h]ibernate" = {

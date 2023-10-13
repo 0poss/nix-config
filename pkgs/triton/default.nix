@@ -1,6 +1,4 @@
-{ lib
-, pkgs
-, stdenv
+{ stdenv
 , fetchFromGitHub
 , z3
 , llvm
