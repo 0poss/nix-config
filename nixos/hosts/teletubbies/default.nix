@@ -9,7 +9,7 @@
     features.wayland
     features.nixpkgs
     features.wireless
-    features.virtualization
+    #features.virtualization
 
     ./hardware-configuration.nix
     ./ephemeral-btrfs.nix
