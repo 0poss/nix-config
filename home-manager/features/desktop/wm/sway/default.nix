@@ -5,6 +5,7 @@ in
 {
   imports = with homeConfFiles; [
     features.emacs
+    features.desktop.swaylock
     features.desktop.apps.chromium
     features.desktop.apps.kitty
     features.desktop.apps.i3status-rust
