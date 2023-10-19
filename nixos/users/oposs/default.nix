@@ -1,8 +1,14 @@
-{ pkgs, lib, config, nixosConfFiles, ... }:
+{ pkgs, lib, config, nixosConfFiles, homeConfFiles, inputs, overlays, ... }:
 {
   imports = with nixosConfFiles; [
+    inputs.home-manager.nixosModules.home-manager
     users.base
   ];
+
+  home-manager = {
+    extraSpecialArgs = { inherit inputs homeConfFiles overlays; };
+    users.oposs = homeConfFiles.homes.oposs;
+  };
 
   users.users.oposs = {
     isNormalUser = true;
