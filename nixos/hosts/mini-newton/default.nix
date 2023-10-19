@@ -9,6 +9,7 @@
     features.wayland
     features.nixpkgs
     features.wireless
+    features.pipewire
 
     ./hardware-configuration.nix
     ./ephemeral-btrfs.nix

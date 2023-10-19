@@ -1,4 +1,7 @@
+{ pkgs, ... }:
 {
+  environment.systemPackages = with pkgs; [ pavucontrol ];
+
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
