@@ -1,6 +1,7 @@
+{ lib, ... }:
 {
   programs.swaylock = {
-    enable = true;
+    enable = lib.mkDefault true;
     settings = {
       color = "808080";
       font-size = 24;
