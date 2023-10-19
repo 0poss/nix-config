@@ -20,6 +20,8 @@ with lib;
   # and similar errors.
   # UPDATE : it's actually making nix crash when rebuilding the OS configuration on teletubbies. Not cool.
   #          I will maybe investing later.
-  #environment.memoryAllocator.provider = mkDefault "scudo";
-  #environment.variables.SCUDO_OPTIONS = mkDefault "zero_contents=1";
+  environment = {
+    memoryAllocator.provider = mkDefault "scudo";
+    variables.SCUDO_OPTIONS = mkDefault "zero_contents=1";
+  };
 }
