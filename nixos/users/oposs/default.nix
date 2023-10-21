@@ -16,7 +16,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-    ] ++ lib.optional (config.virtualisation.libvirtd.enable) "libvirtd";
+    ] ++ lib.optionals (config.virtualisation.libvirtd.enable) [ "libvirtd" ];
 
     packages = with pkgs; [ home-manager git ];
     shell = pkgs.zsh;
