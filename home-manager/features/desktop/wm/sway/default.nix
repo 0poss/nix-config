@@ -19,13 +19,13 @@ in
     let
       mod = config.wayland.windowManager.sway.config.modifier;
       menu_prompt =
-        "system: [e]xit [l]ock [r]eboot [p]oweroff [h]ibernate";
+        "system: [e]xit [l]ock [r]eboot [p]oweroff [s]uspend";
       menu_mode = {
         e = "exec swaymsg exit";
         l = "exec swaylock";
         r = "exec reboot";
         p = "exec poweroff";
-        h = "systemctl hibernate";
+        s = "exec systemctl suspend";
         Return = "mode default";
         Escape = "mode default";
         "${mod}+g" = "mode default";
