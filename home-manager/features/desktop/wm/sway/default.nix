@@ -13,6 +13,8 @@ in
     features.desktop.wallpapers
   ];
 
+  fontProfiles.enable = true;
+
   home.packages = with pkgs; [ grim slurp wl-clipboard ];
 
   services.emacs.enable = true;
@@ -85,6 +87,9 @@ in
           {
             statusCommand =
               "i3status-rs ~/.config/i3status-rust/config-default.toml";
+            fonts = {
+              names = [ config.fontProfiles.monospace.family ];
+            };
             position = "bottom";
             colors = {
               background = "#${colors.base00}";
