@@ -1,4 +1,4 @@
-{ config, lib, homeConfFiles, ... }:
+{ config, pkgs, lib, homeConfFiles, ... }:
 let
   inherit (config.colorScheme) colors;
 in
@@ -12,6 +12,8 @@ in
     features.desktop.apps.kickoff
     features.desktop.wallpapers
   ];
+
+  home.packages = with pkgs; [ grim slurp wl-clipboard ];
 
   services.emacs.enable = true;
 
@@ -102,8 +104,8 @@ in
             inherit (config.wayland.windowManager.sway.config)
               left down up right;
           in
-            {
-              "${menu_prompt}" = menu_mode;
+          {
+            "${menu_prompt}" = menu_mode;
             resize = {
               "${mod}+${left}" = "resize shrink width 10 px";
               "${mod}+${down}" = "resize grow height 10 px";
@@ -148,6 +150,7 @@ in
             "${mod}+e" = "exec emacsclient --create-frame";
             "${mod}+d" = "exec ${menu}";
             "${mod}+Shift+q" = "kill";
+            "${mod}+Alt+p" = ''exec grim -g "$(slurp -d)" - | wl-copy -t image/png'';
 
             "${mod}+o" = "split v";
             "${mod}+p" = "split h";
