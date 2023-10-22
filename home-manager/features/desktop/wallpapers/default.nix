@@ -1,8 +1,14 @@
 { lib, ... }:
 {
-  options.selectedWallpaper = lib.mkOption {
+  options.selected-wallpaper = lib.mkOption {
     type = lib.types.path;
-    default = ./m606.jpg;
-    description = "Path to the wallpaper";
+    default = ./ohms.png;
+    description = "Path to the wallpaper.";
+  };
+
+  options.selected-lockscreen = lib.mkOption {
+    type = lib.types.path;
+    default = ./stanczyk.jpg;
+    description = "Path to the lockscreen.";
   };
 }
