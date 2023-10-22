@@ -61,7 +61,7 @@ in
 
         output = {
           "*" = {
-            bg = ''"'' + (builtins.toString config.selectedWallpaper) + ''" fill'';
+            bg = ''"'' + (builtins.toString config.selected-wallpaper) + ''" fill'';
           };
         };
 

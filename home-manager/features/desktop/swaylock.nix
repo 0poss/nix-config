@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config, ... }:
 {
   programs.swaylock = {
     enable = lib.mkDefault true;
@@ -9,7 +9,7 @@
       indicator-radius = 100;
       line-color = "ffffff";
       show-failed-attempts = true;
-      image = toString ./wallpapers/stanczyk.jpg;
+      image = toString config.selected-lockscreen;
     };
   };
 }
