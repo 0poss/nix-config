@@ -46,8 +46,8 @@ in
             }
 
             {
-              block = "external_ip";
-              format = " $ip $country_code ";
+              block = "net";
+              format = " $icon {$signal_strength $ssid $frequency|Wired connection} via $device ";
             }
 
             { block = "cpu"; }
