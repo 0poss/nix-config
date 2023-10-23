@@ -14,14 +14,7 @@ with lib;
 
   nix.settings.allowed-users = mkDefault [ "@users" ];
 
-  # I didn't notice any error coming from using scudo so that's free hardening.
-  # OK actually there ARE some errors (for example when building the configuration) such as :
-  # version `GLIBC_ABI_DT_RELR' not found
-  # and similar errors.
-  # UPDATE : it's actually making nix crash when rebuilding the OS configuration on teletubbies. Not cool.
-  #          I will maybe investing later.
   environment = {
-    memoryAllocator.provider = mkDefault "scudo";
-    variables.SCUDO_OPTIONS = mkDefault "zero_contents=1";
+    memoryAllocator.provider = mkDefault "graphene-hardened";
   };
 }
