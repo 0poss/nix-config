@@ -4,6 +4,11 @@
 * NixOS flake configuration
 This is my full NixOS configuration.
 
+*** TODO Secure boot
+*** TODO Find a way to secure the local configuration.
+Normal users should be able to modify their home-manager configuration, without being able to backdoor the system (i.e. modifying the NixOS configuration).
+*** TODO Probably some cleanup. Some stuff aren't where they should be.
+
 * Coding convention
 There's not much :
 - I format everything with [[https://github.com/nix-community/nixpkgs-fmt][nixpkgs-fmt]].
