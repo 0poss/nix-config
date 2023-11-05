@@ -1,11 +1,9 @@
-{ config, lib, modulesPath, ... }:
+{ config, lib, ... }:
 let
   inherit (config.networking) hostName;
 in
 {
-  imports = [
-    (modulesPath + "/installer/scan/not-detected.nix")
-  ];
+  hardware.enableRedistributableFirmware = lib.mkDefault true;
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -19,6 +17,7 @@ in
     "usb_storage"
     "sd_mod"
     "rtsx_pci_sdmmc"
+    "exfat"
   ];
 
   boot.initrd.kernelModules = [ ];
