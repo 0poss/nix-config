@@ -8,9 +8,11 @@
 , libGL
 , libxkbcommon
 , makeDesktopItem
+, makeWrapper
 , requireFile
 , unzip
 , wayland-scanner
+, python310
 , xorg
 , zlib
 }:
@@ -32,8 +34,23 @@ stdenv.mkDerivation rec {
   };
 
   installPhase = ''
-    mkdir -p $out/share/${name}
-    cp -r * $out/share/${name}
+    runHook preInstall
+
+    mkdir -p $out/opt
+    cp -r * $out/opt
+    chmod +x $out/opt/binaryninja
+
+    # https://github.com/Vector35/binaryninja-api/issues/464
+    # path confirmed via strace binaryninja &| kg -C10 python
+    ln -s ${python310}/lib/libpython3.10.so.1.0 $out/opt/
+
+    mkdir -p $out/share/pixmaps
+    cp docs/img/logo.png $out/share/pixmaps/binary-ninja.png
+
+    mkdir -p $out/bin
+    makeWrapper $out/opt/binaryninja $out/bin/binaryninja
+
+    runHook postInstall
   '';
 
   buildInputs = [
@@ -55,6 +72,7 @@ stdenv.mkDerivation rec {
     autoPatchelfHook
     copyDesktopItems
     unzip
+    makeWrapper
   ];
 
   autoPatchelfIgnoreMissingDeps = [
