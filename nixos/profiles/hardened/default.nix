@@ -24,6 +24,7 @@ in
           in
           {
             EXPERT = hye;
+            WERROR = hye;
 
             TRIM_UNUSED_KSYMS = hye;
             XFS_FS = hno;
@@ -32,7 +33,6 @@ in
             FTRACE = hno;
             KPROBES = hno;
             EFI_CUSTOM_SSDT_OVERLAYS = hno;
-            #FB = hno;
             STAGING = hno;
             COREDUMP = hno;
 
@@ -54,6 +54,33 @@ in
             KALLSYMS = hno;
             KSM = hno;
             HIBERNATION = hno;
+            INIT_ON_ALLOC_DEFAULT_ON = hye;
+            INIT_ON_FREE_DEFAULT_ON = hye;
+            RANDSTRUCT_FULL = hye;
+            RANDSTRUCT_PERFORMANCE = hno;
+            BLK_DEV_FD = hno;
+            #FB = hno; # TODO the initrd doesn't like it
+            SUNRPC_DEBUG = hno;
+            PROVIDE_OHCI1394_DMA_INIT = hno;
+            RSEQ = hno;
+            # CONFIG_KCMP Selected by :
+            # DRM [=y] && HAS_IOMEM [=y] && (AGP [=y] || AGP [=y]=n) && !EMULATED_CMPXCHG && HAS_DMA [=y]
+            KCMP = hno;
+            IO_URING = hno;
+            MTD_PHRAM = hno;
+            MTD_SLRAM = hno;
+            DEBUG_VIRTUAL = hye;
+            UBSAN = hye;
+            UBSAN_ENUM = hye;
+            UBSAN_BOUNDS = hye;
+            UBSAN_LOCAL_BOUNDS = hye;
+            UBSAN_TRAP = hye;
+            UBSAN_SANITIZE_ALL = hye;
+            RESET_ATTACK_MITIGATION = hye;
+            SLS = hye;
+            IA32_EMULATION = hno;
+            COMPAT = hno;
+            DEBUG_FS = hno;
           };
       }
     ];
