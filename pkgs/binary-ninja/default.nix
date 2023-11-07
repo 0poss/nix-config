@@ -17,7 +17,7 @@
 , zlib
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   name = "binary-ninja";
 
   src = requireFile rec {
