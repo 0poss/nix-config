@@ -4,10 +4,12 @@
 * NixOS flake configuration
 This is my full NixOS configuration.
 
-- TODO Secure boot
-- TODO Find a way to secure the local configuration.
-Normal users should be able to modify their home-manager configuration, without being able to backdoor the system (i.e. modifying the NixOS configuration).
-- TODO Probably some cleanup. Some stuff aren't where they should be.
+* TODO Stuff to do
+- Secure boot
+- Find a way to secure the local configuration.
+  Normal users should be able to modify their home-manager configuration, without being able to backdoor the system (i.e. modifying the NixOS configuration).
+- Probably some cleanup. Some stuff aren't where they should be.
+- Create a VM configuration for CTFs.
 
 * Coding convention
 There's not much :
