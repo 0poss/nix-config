@@ -20,6 +20,10 @@
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
+      forAllSystems = nixpkgs.lib.genAttrs [
+        "x86_64-linux"
+      ];
+
       overlays = import ./overlays { inherit inputs; };
 
       nixosConfFiles = import ./nixos;
@@ -36,6 +40,8 @@
     in
     {
       inherit overlays;
+
+      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
 
       nixosConfigurations = {
         "nixos-teletubbies" = mkNixOS [ nixosConfFiles.hosts.teletubbies ];
