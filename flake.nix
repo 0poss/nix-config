@@ -48,6 +48,7 @@
       nixosConfigurations = {
         "nixos-teletubbies" = mkNixOS [ nixosConfFiles.hosts.teletubbies ];
         "nixos-mini-newton" = mkNixOS [ nixosConfFiles.hosts.mini-newton ];
+        "nixos-puffy" = mkNixOS [ nixosConfFiles.hosts.puffy ];
       };
 
       homeConfigurations = {
