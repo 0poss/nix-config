@@ -41,7 +41,9 @@
     {
       inherit overlays;
 
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      packages = forAllSystems (system: import ./pkgs {
+        pkgs = nixpkgs.legacyPackages.${system};
+      });
 
       nixosConfigurations = {
         "nixos-teletubbies" = mkNixOS [ nixosConfFiles.hosts.teletubbies ];
