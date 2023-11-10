@@ -5,7 +5,6 @@
     profiles.hardened
 
     users.oposs
-    features.nixpkgs
     features.wayland
     features.nixpkgs
     features.wireless

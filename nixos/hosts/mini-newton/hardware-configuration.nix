@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
   inherit (config.networking) hostName;
 in
@@ -9,6 +9,8 @@ in
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
   };
+
+  environment.systemPackages = with pkgs; [ exfat ];
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"

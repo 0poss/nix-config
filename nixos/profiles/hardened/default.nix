@@ -4,8 +4,11 @@ let
   mkHardOpt = lib.mkOverride 99;
 in
 {
-  boot = {
+  environment = {
+    memoryAllocator.provider = mkHardOpt "graphene-hardened";
+  };
 
+  boot = {
     kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_6_5_hardened.override
       {
         #stdenv = pkgs.ccacheStdenv;
