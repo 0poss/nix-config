@@ -70,7 +70,18 @@ in
         };
 
         gaps = {
-          inner = 10;
+          inner = 5;
+          smartBorders = "on";
+          smartGaps = true;
+        };
+
+        floating = {
+          border = 1;
+        };
+
+        window = {
+          border = 1;
+          titlebar = false;
         };
 
         colors = {
@@ -137,8 +148,8 @@ in
                 k3 = "quotedbl";
                 k4 = "apostrophe";
                 k5 = "parenleft";
-                k6 = "egrave";
-                k7 = "minus";
+                k6 = "minus";
+                k7 = "egrave";
                 k8 = "underscore";
                 k9 = "ccedilla";
                 k10 = "agrave";
@@ -166,6 +177,9 @@ in
             "${mod}+Shift+w" = "layout tabbed";
             "${mod}+r" = "mode resize";
             "${mod}+Shift+v" = ''mode "${menu_prompt}"'';
+
+            "${mod}+plus" = "move scratchpad";
+            "${mod}+parenright" = "scratchpad show";
 
             "${mod}+${left}" = "focus left";
             "${mod}+${down}" = "focus down";
