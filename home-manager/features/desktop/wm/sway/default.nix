@@ -178,8 +178,8 @@ in
             "${mod}+r" = "mode resize";
             "${mod}+Shift+v" = ''mode "${menu_prompt}"'';
 
-            "${mod}+plus" = "move scratchpad";
-            "${mod}+parenright" = "scratchpad show";
+            "${mod}+plus" = "scratchpad show";
+            "${mod}+Shift+plus" = "move scratchpad";
 
             "${mod}+${left}" = "focus left";
             "${mod}+${down}" = "focus down";
