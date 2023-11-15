@@ -11,8 +11,9 @@ in
     enable = true;
     font = {
       name = config.fontProfiles.monospace.family;
-      size = 11;
+      size = 9.5;
     };
+
     settings = {
       cursor_shape = "beam";
       scrollback_lines = 4000;
