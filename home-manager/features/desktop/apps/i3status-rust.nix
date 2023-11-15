@@ -15,7 +15,7 @@ in
 
   config.programs.i3status-rust = {
     enable = true;
-    package = pkgs.unstable.i3status-rust;
+    package = pkgs.i3status-rust;
     bars = {
       default = {
         settings.theme = {

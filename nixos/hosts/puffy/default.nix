@@ -37,7 +37,7 @@
 
     packages = with pkgs; [
       git
-      binary-nija
+      binary-ninja
     ];
     shell = pkgs.zsh;
     hashedPassword = "$y$j9T$3ikX9sUneJBNeiJG5jdst1$2AAzLD2pkDVORF61mua5GtezE8du.07jaPCkvz0ytK8";

@@ -4,6 +4,10 @@ let
   mkHardOpt = lib.mkOverride 99;
 in
 {
+  # The build sandbox - with this hardened profile at least - makes the check
+  # fail, so disable it.
+  services.logrotate.checkConfig = false;
+
   environment = {
     memoryAllocator.provider = mkHardOpt "graphene-hardened";
   };
