@@ -2,19 +2,15 @@
   description = "0poss's flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.05";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nix-colors.url = "github:misterio77/nix-colors";
-
     rust-overlay.url = "github:oxalica/rust-overlay";
-
     impermanence.url = "github:nix-community/impermanence";
   };
 
