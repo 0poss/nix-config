@@ -6,12 +6,11 @@
     enable = true;
     package = pkgs.ungoogled-chromium;
     commandLineArgs = [
-      # Disable JIT.
-      "--js-flags=--jitless"
-      # Disable wasm.
+      "--disable-top-sites"
+      "--disable-webgl"
+      "--remove-cross-origin-referrers"
       "--js-flags=--noexpose_wasm"
-      # Disable WebGL.
-      "--disable-3d-apis"
+      "--js-flags=--jitless"
     ];
   };
 }
