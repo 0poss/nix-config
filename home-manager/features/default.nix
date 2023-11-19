@@ -1,7 +1,15 @@
+{ lib, inputs, ... }:
 {
-  cli = import ./cli;
-  desktop = import ./desktop;
-  emacs = import ./emacs;
-  fonts = import ./fonts.nix;
-  latex = import ./latex;
+  imports = [
+    inputs.nix-colors.homeManagerModules.default
+
+    ./desktop
+    ./emacs
+    ./fonts.nix
+  ];
+
+  home = {
+    stateVersion = lib.mkDefault "23.05";
+    keyboard.layout = lib.mkDefault "fr";
+  };
 }

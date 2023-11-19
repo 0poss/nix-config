@@ -1,12 +1,22 @@
-{ pkgs, homeConfFiles, ... }:
+{ lib, pkgs, inputs, config, overlays, homeConfFiles, ... }:
 {
-  imports = with homeConfFiles; [
-    homes.base
-    features.cli
-    features.emacs
-    features.desktop.wm.sway
-    features.latex
+  imports = [
+    homeConfFiles.features
   ];
+
+  home = {
+    username = "oposs";
+    homeDirectory = "/home/${config.home.username}";
+    packages = with pkgs; [
+      ripgrep
+      fd
+      fzf
+      bat
+      pfetch
+    ];
+  };
+
+  nixpkgs.overlays = (lib.attrValues overlays);
 
   fontProfiles = {
     enable = true;
@@ -16,7 +26,16 @@
     };
   };
 
-  home.sessionVariables = {
-    EDITOR = "emacs -nw";
+  colorScheme = inputs.nix-colors.colorSchemes.bright;
+
+  programs.git = {
+    enable = true;
+    userName = "0poss";
+    userEmail = "brnnrlxndr@gmail.com";
   };
+
+  programs.home-manager.enable = true;
+
+  emacs.enable = true;
+  sway.enable = true;
 }
