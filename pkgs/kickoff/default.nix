@@ -4,7 +4,8 @@
 , pkg-config
 , fontconfig
 , wayland
-, libxkbcommon }:
+, libxkbcommon
+}:
 
 rustPlatform.buildRustPackage rec {
   pname = "kickoff";
@@ -22,12 +23,13 @@ rustPlatform.buildRustPackage rec {
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [ fontconfig wayland libxkbcommon ];
 
-  postFixup = let
-    libPath = lib.makeLibraryPath buildInputs;
-  in
+  postFixup =
+    let
+      libPath = lib.makeLibraryPath buildInputs;
+    in
     ''
-    patchelf --add-rpath "${libPath}" \
-             $out/bin/${pname}
+      patchelf --add-rpath "${libPath}" \
+               $out/bin/${pname}
     '';
 
   meta = with lib; {
