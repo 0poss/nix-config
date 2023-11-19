@@ -16,7 +16,7 @@
           "Documents"
           "Pictures"
           ".config"
-	  ".emacs.d"
+          ".emacs.d"
           { directory = ".ssh"; mode = "0700"; }
           { directory = ".gnupg"; mode = "0700"; }
         ];

@@ -1,7 +1,8 @@
 { lib
 , stdenvNoCC
 , requireFile
-, unzip }:
+, unzip
+}:
 
 stdenvNoCC.mkDerivation {
   name = "berkeley-mono";

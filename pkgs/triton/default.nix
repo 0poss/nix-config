@@ -5,7 +5,8 @@
 , python3
 , boost
 , capstone
-, cmake }:
+, cmake
+}:
 
 stdenv.mkDerivation {
   pname = "libtriton";
