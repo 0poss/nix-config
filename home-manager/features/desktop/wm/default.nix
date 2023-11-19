@@ -1,3 +1,5 @@
 {
-  sway = import ./sway;
+  imports = [
+    ./sway
+  ];
 }
