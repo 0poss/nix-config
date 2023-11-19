@@ -1,4 +1,4 @@
-{ homeConfFiles, ... }:
+{ pkgs, homeConfFiles, ... }:
 {
   imports = with homeConfFiles; [
     homes.base
@@ -7,6 +7,14 @@
     features.desktop.wm.sway
     features.latex
   ];
+
+  fontProfiles = {
+    enable = true;
+    monospace = {
+      family = "Berkeley Mono";
+      package = pkgs.berkeley-mono;
+    };
+  };
 
   home.sessionVariables = {
     EDITOR = "emacs -nw";
