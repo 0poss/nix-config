@@ -30,7 +30,7 @@ in
           l = "exec swaylock";
           r = "exec reboot";
           p = "exec poweroff";
-          s = "exec systemctl suspend";
+          s = ''exec "systemctl suspend && swaylock"'';
           Return = "mode default";
           Escape = "mode default";
           "${mod}+g" = "mode default";
