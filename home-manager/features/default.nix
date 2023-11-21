@@ -5,6 +5,7 @@
 
     ./desktop
     ./emacs
+    ./shell
     ./fonts.nix
   ];
 

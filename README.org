@@ -14,8 +14,6 @@ This is my full NixOS configuration.
 * Coding convention
 There's not much :
 - I format everything with [[https://github.com/nix-community/nixpkgs-fmt][nixpkgs-fmt]].
-
-
 - No relative ~imports~ to upper directories. Instead, if a module needs to be accessed from elsewhere in the flake, create or add a reference to it in the ~default.nix~ file inside the parent directory. It can then be imported using ~homeConfFiles~ or ~nixosConfFiles~.
   + Pros :
     * Relative imports are dirty and can be hard to understand for an unfamiliar reader. Referencing imports from the root of the flake puts forward the full logical path of the imported module.

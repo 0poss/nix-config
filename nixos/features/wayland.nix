@@ -13,4 +13,6 @@
       ];
     };
   };
+
+  security.pam.services.swaylock = { };
 }

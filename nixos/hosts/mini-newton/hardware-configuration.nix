@@ -1,9 +1,6 @@
-{ config, pkgs, lib, ... }:
-let
-  inherit (config.networking) hostName;
-in
+{ config, pkgs, ... }:
 {
-  hardware.enableRedistributableFirmware = lib.mkDefault true;
+  hardware.enableRedistributableFirmware = true;
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -31,19 +28,9 @@ in
 
   boot.extraModulePackages = [ ];
 
-  boot.initrd.luks.devices."${hostName}-opened".device = "/dev/disk/by-label/${hostName}-crypt";
-
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-label/NIXOS-BOOT";
-      fsType = "vfat";
-    };
-
   swapDevices = [ ];
 
-  networking.useDHCP = lib.mkDefault true;
-
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  nixpkgs.hostPlatform = "x86_64-linux";
+  powerManagement.cpuFreqGovernor = "powersave";
+  hardware.cpu.intel.updateMicrocode = config.hardware.enableRedistributableFirmware;
 }

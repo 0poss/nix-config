@@ -1,7 +1,8 @@
 { pkgs, nixosConfFiles, ... }:
 {
   imports = with nixosConfFiles; [
-    hosts.base
+    features.standard-disk-layout
+
     profiles.hardened
 
     users.oposs
@@ -9,33 +10,28 @@
     features.nixpkgs
     features.wireless
     features.pipewire
+    features.locale
 
     ./hardware-configuration.nix
-    ./ephemeral-btrfs.nix
     ./persist.nix
   ];
+
+  features.standard-disk-layout = {
+    ephemeral-btrfs.enable = true;
+    encryption.enable = true;
+  };
+
+  users.users.root.hashedPassword = "$6$rounds=50000000$cvIEZAR5IvtCciec$s2or9o8yAwnPO2gJmTE78Av3NJJRYXSsfBi1Rnf0IzU/0NsYENzDhBvszqWs2wZeEZ2qENawAMbjbbXVxvdwJ.";
+
+  nix.settings.allowed-users = [ "@users" ];
 
   networking.hostName = "mini-newton";
 
   environment = with pkgs; {
-    systemPackages = [ git emacs ];
-    shells = [ bash zsh ];
+    systemPackages = [ git home-manager vim ];
   };
 
   security.chromiumSuidSandbox.enable = true;
-
-  programs.firejail.enable = true;
-
-  programs.firejail.wrappedBinaries = {
-    firefox = {
-      executable = "${pkgs.lib.getBin pkgs.firefox}/bin/firefox";
-      profile = "${pkgs.firejail}/etc/firejail/firefox.profile";
-    };
-    chromium = {
-      executable = "${pkgs.lib.getBin pkgs.chromium}/bin/chromium";
-      profile = "${pkgs.firejail}/etc/firejail/chromium.profile";
-    };
-  };
 
   system.stateVersion = "23.05";
 }

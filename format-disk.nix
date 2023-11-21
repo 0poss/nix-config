@@ -53,7 +53,7 @@
                   postCreateHook = ''
                     (
                       MNTPOINT=$(mktemp -d)
-                      mount -t btrfs /dev/mapper/${hostName}-opened $MNTPOINT
+                      mount -t btrfs /dev/disk/by-label/${hostName} $MNTPOINT
                       trap 'umount $MNTPOINT; rm -rf $MNTPOINT' EXIT
                       btrfs subvolume snapshot -r $MNTPOINT/fsroot $MNTPOINT/fsroot-blank
                     )
