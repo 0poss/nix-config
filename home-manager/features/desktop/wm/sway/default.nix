@@ -134,7 +134,7 @@ in
               };
             };
 
-          keybindings = with lib;
+          keybindings =
             let
               mod = sway-cfg.modifier;
               inherit (sway-cfg)
@@ -156,9 +156,9 @@ in
                   k10 = "agrave";
                 }
                 else
-                  listToAttrs
-                    (map (k: nameValuePair (toString k) (toString (trivial.modulo k 10)))
-                      (range 1 10));
+                  lib.listToAttrs
+                    (map (i: lib.nameValuePair ("k" + toString i) (toString (lib.mod i 10)))
+                      (lib.range 1 10));
             in
             {
               "${mod}+Shift+b" = "reload";
