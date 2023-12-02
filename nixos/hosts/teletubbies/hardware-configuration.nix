@@ -1,11 +1,6 @@
-{ config, lib, modulesPath, ... }:
-let
-  inherit (config.networking) hostName;
-in
+{ config, pkgs, ... }:
 {
-  imports = [
-    (modulesPath + "/installer/scan/not-detected.nix")
-  ];
+  hardware.enableRedistributableFirmware = true;
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -20,34 +15,19 @@ in
     "usbhid"
     "sd_mod"
   ];
+
   boot.initrd.kernelModules = [ ];
+
   boot.kernelModules = [
     "kvm-intel"
     "ccm"
   ];
+
   boot.extraModulePackages = [ ];
 
-  boot.initrd.luks.devices."${hostName}-opened".device = "/dev/disk/by-label/${hostName}-crypt";
+  swapDevices = [ ];
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-label/NIXOS-BOOT";
-      fsType = "vfat";
-    };
-
-  swapDevices = [
-    {
-      device = "/dev/disk/by-partuuid/9760dc3d-5f76-1646-bb18-351bd1f1c780";
-      randomEncryption = {
-        cipher = "serpent-xts-plain64";
-        enable = true;
-      };
-    }
-  ];
-
-  networking.useDHCP = lib.mkDefault true;
-
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  nixpkgs.hostPlatform = "x86_64-linux";
+  powerManagement.cpuFreqGovernor = "powersave";
+  hardware.cpu.intel.updateMicrocode = config.hardware.enableRedistributableFirmware;
 }

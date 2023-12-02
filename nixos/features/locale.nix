@@ -1,21 +1,21 @@
-{ ... }:
+{ lib, ... }:
 {
-  console.keyMap = "fr";
+  console.keyMap = lib.mkDefault "fr";
 
-  time.timeZone = "Europe/Paris";
+  time.timeZone = lib.mkDefault "Europe/Paris";
 
   i18n = {
-    defaultLocale = "fr_FR.UTF-8";
+    defaultLocale = lib.mkDefault "fr_FR.UTF-8";
     extraLocaleSettings = {
-      LC_ADDRESS = "fr_FR.UTF-8";
-      LC_IDENTIFICATION = "fr_FR.UTF-8";
-      LC_MEASUREMENT = "fr_FR.UTF-8";
-      LC_MONETARY = "fr_FR.UTF-8";
-      LC_NAME = "fr_FR.UTF-8";
-      LC_NUMERIC = "fr_FR.UTF-8";
-      LC_PAPER = "fr_FR.UTF-8";
-      LC_TELEPHONE = "fr_FR.UTF-8";
-      LC_TIME = "fr_FR.UTF-8";
+      LC_ADDRESS = lib.mkDefault "fr_FR.UTF-8";
+      LC_IDENTIFICATION = lib.mkDefault "fr_FR.UTF-8";
+      LC_MEASUREMENT = lib.mkDefault "fr_FR.UTF-8";
+      LC_MONETARY = lib.mkDefault "fr_FR.UTF-8";
+      LC_NAME = lib.mkDefault "fr_FR.UTF-8";
+      LC_NUMERIC = lib.mkDefault "fr_FR.UTF-8";
+      LC_PAPER = lib.mkDefault "fr_FR.UTF-8";
+      LC_TELEPHONE = lib.mkDefault "fr_FR.UTF-8";
+      LC_TIME = lib.mkDefault "fr_FR.UTF-8";
     };
   };
 }
