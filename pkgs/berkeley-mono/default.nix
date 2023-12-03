@@ -2,6 +2,7 @@
 , stdenvNoCC
 , requireFile
 , unzip
+, sha256 ? "17cqpql8zvakczvjhbzp6mgxvr137av2nik53p0ylk6gwjlqklv1"
 }:
 stdenvNoCC.mkDerivation {
   name = "berkeley-mono";
@@ -9,7 +10,7 @@ stdenvNoCC.mkDerivation {
   src = requireFile rec {
     name = "berkeley-mono-typeface.zip";
     url = "https://berkeleygraphics.com/typefaces/berkeley-mono/";
-    sha256 = "0w702gjd9v9nq2va9ph072xsvc7qn7nhw7zb6hf8wiikrjiz46a2";
+    inherit sha256;
     message = ''
       Stable download URLs for Berkeley Mono Typeface are not available.
       Please visit ${url} and find the download link for ${name},
