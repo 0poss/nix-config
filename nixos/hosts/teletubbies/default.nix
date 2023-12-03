@@ -26,11 +26,6 @@
     users.oposs =
       {
         home.keyboard.layout = "us";
-        fontProfiles.monospace = lib.mkForce
-          {
-            family = "Iosevka Nerd Font";
-            package = pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; };
-          };
       };
   };
 
