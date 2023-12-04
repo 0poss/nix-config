@@ -5,7 +5,6 @@ in
 {
   options = {
     i3status-rust = {
-      enable = lib.mkEnableOption "Whether to enable i3status-rust";
       has-backlight = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -14,7 +13,7 @@ in
     };
   };
 
-  config = lib.mkIf config.i3status-rust.enable {
+  config = {
     programs.i3status-rust = {
       enable = true;
       package = pkgs.i3status-rust;

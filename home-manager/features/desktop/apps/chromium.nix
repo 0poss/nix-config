@@ -2,7 +2,6 @@
 {
   options = {
     chromium = {
-      enable = lib.mkEnableOption "Whether to enable chromium";
       enable-hardening = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -11,7 +10,7 @@
     };
   };
 
-  config = lib.mkIf config.chromium.enable {
+  config = {
     programs.chromium = {
       enable = true;
       package = pkgs.ungoogled-chromium;

@@ -1,10 +1,11 @@
-{ lib, inputs, homeConfFiles, overlays, pkgs, nixosConfFiles, ... }:
+{ inputs, homeConfFiles, overlays, pkgs, nixosConfFiles, ... }:
 {
   imports = with nixosConfFiles; [
     inputs.home-manager.nixosModules.home-manager
     features.wayland
     features.nixpkgs
     features.locale
+    features.pie-overlay
   ];
 
   services.logrotate.checkConfig = false;
@@ -29,23 +30,6 @@
   nix.settings.substituters = [];
   system.stateVersion = "23.05";
   nixpkgs.hostPlatform = "x86_64-linux";
-  nixpkgs.overlays = [
-    (let
-      # bootstrapTools' `glibc` does not provide enough PIE linking environment.
-      isGoodStdenv = stdenv: let
-        name = builtins.trace stdenv.name (stdenv.name or "");
-      in
-        !(lib.strings.hasInfix "bootstrap" name);
-    in
-      self: super: {
-        stdenv = super.stdenv // super.lib.optionalAttrs (isGoodStdenv super.stdenv) {
-          mkDerivation = fnOrAttrs: super.stdenv.mkDerivation (
-            if builtins.isFunction fnOrAttrs then fnOrAttrs
-            else fnOrAttrs // { hardeningEnable = [ "pie" ]; }
-          );
-        };
-      })
-  ];
 
   home-manager = {
     extraSpecialArgs = { inherit inputs homeConfFiles overlays; };

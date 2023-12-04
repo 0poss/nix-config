@@ -4,7 +4,7 @@
 * Setup basic stuff
 Setup the font.
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(font . "Berkeley Mono-11"))
+  (add-to-list 'default-frame-alist '(font . "Berkeley Mono-10"))
 #+end_src
 
 Follow symlinks and disable sound bell.
