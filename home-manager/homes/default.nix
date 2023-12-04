@@ -1,3 +1,3 @@
 {
-  oposs = import ./oposs;
+  oposs = ./oposs;
 }

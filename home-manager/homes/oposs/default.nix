@@ -1,9 +1,18 @@
 { lib, pkgs, inputs, config, overlays, homeConfFiles, ... }:
 {
   imports = [
-    homeConfFiles.features
+    inputs.nix-colors.homeManagerModules.default
+    homeConfFiles.features.fonts
+    homeConfFiles.features.desktop.wm.sway
+    homeConfFiles.features.emacs
   ];
 
+  home = {
+    stateVersion = lib.mkDefault "23.05";
+    keyboard.layout = lib.mkDefault "us";
+  };
+
+  programs.home-manager.enable = true;
   home = {
     username = "oposs";
     homeDirectory = "/home/${config.home.username}";
@@ -33,9 +42,4 @@
     userName = "0poss";
     userEmail = "brnnrlxndr@gmail.com";
   };
-
-  programs.home-manager.enable = true;
-
-  emacs.enable = true;
-  sway.enable = true;
 }

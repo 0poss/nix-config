@@ -1,8 +1,6 @@
 {
-  imports = [
-    ./apps
-    ./wallpapers
-    ./wm
-    ./swaylock.nix
-  ];
+  apps = import ./apps;
+  wallpapers = ./wallpapers;
+  wm = import ./wm;
+  swaylock = ./swaylock.nix;
 }
