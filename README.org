@@ -21,6 +21,8 @@ There's not much :
   + Cons :
     * Adding modules to ~default.nix~ files can be cumbersome.
     * More generally, it usually takes more characters and lines just to import modules.
+  + Note :
+    * You need to be careful not to ~import~ leaf modules (files actually containing a module, not importing a path), otherwise they'll be evaluated as many times as they are imported with ~imports = [ ... ]~ which WILL cause conflicts in ~options~ declarations and definitions.
   + Example :
 
     Don't do :
@@ -41,7 +43,13 @@ There's not much :
     #+begin_src nix
   # home-manager/users/default.nix
   {
-    base = import ./base;
+    base = ./base;
+  }
+#+end_src
+    #+begin_src nix
+  # home-manager/default.nix
+  {
+    users = import ./users;
   }
 #+end_src
 
