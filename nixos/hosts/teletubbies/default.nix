@@ -10,6 +10,7 @@
     features.nixpkgs
     features.wireless
     features.locale
+    features.pie-overlay
 
     ./hardware-configuration.nix
     ./persist.nix

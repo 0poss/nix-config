@@ -5,6 +5,7 @@
     homeConfFiles.features.fonts
     homeConfFiles.features.desktop.wm.sway
     homeConfFiles.features.emacs
+    homeConfFiles.features.shell
   ];
 
   home = {
