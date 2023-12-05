@@ -21,6 +21,14 @@
     encryption.enable = true;
   };
 
+  console.keyMap = "fr";
+  home-manager = {
+    users.oposs =
+      {
+        home.keyboard.layout = "fr";
+      };
+  };
+
   users.users.root.hashedPassword = "$6$rounds=50000000$cvIEZAR5IvtCciec$s2or9o8yAwnPO2gJmTE78Av3NJJRYXSsfBi1Rnf0IzU/0NsYENzDhBvszqWs2wZeEZ2qENawAMbjbbXVxvdwJ.";
 
   nix.settings.allowed-users = [ "@users" ];

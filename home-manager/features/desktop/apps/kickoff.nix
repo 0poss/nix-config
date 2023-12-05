@@ -3,7 +3,7 @@ let
   colors = config.colorScheme.colors;
 in
 {
-  #imports = [ homeConfFiles.features.fonts ];
+  imports = [ homeConfFiles.features.fonts ];
 
   fontProfiles.enable = true;
 

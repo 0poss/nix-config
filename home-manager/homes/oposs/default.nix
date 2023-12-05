@@ -32,7 +32,9 @@
     enable = true;
     monospace = {
       family = "Berkeley Mono";
-      package = pkgs.berkeley-mono;
+      package = pkgs.berkeley-mono.override {
+        sha256 = "0f2237irx2a0ss325bgpzgxhvv5gz66j5xn2k3fnzb9pfzbjvvxf";
+      };
     };
   };
 
