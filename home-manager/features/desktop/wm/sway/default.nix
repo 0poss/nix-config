@@ -16,7 +16,7 @@ in
 
   home.packages = with pkgs; [ grim slurp wl-clipboard ];
 
-  services.emacs.enable = config.emacs.enable;
+  services.emacs.enable = config.programs.emacs.enable;
 
   wayland.windowManager.sway =
     let

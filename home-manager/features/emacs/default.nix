@@ -1,26 +1,20 @@
 { lib, pkgs, config, ... }:
 {
-  options = {
-    emacs.enable = lib.mkEnableOption "Whether to enable emacs";
+  programs.emacs = {
+    enable = true;
   };
 
-  config = lib.mkIf config.emacs.enable {
-    programs.emacs = {
-      enable = true;
-    };
+  home.packages = with pkgs; [
+    nil # nix language server
+    nixpkgs-fmt # nix formatter
+  ];
 
-    home.packages = with pkgs; [
-      nil # nix language server
-      nixpkgs-fmt # nix formatter
-    ];
+  home.file.".emacs.d/init.el" = {
+    source = ./init.el;
+  };
 
-    home.file.".emacs.d/init.el" = {
-      source = ./init.el;
-    };
-
-    home.file.".emacs.d/config.org" = {
-      source = ./config.org;
-      onChange = "rm ~/.emacs.d/config.el";
-    };
+  home.file.".emacs.d/config.org" = {
+    source = ./config.org;
+    onChange = "rm ~/.emacs.d/config.el";
   };
 }

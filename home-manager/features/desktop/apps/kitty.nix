@@ -1,9 +1,13 @@
-{ config, inputs, ... }:
+{ config, inputs, homeConfFiles, ... }:
 let
   colors = config.colorScheme.colors;
 in
 {
-  imports = [ inputs.nix-colors.homeManagerModules.default ];
+  imports = [
+    inputs.nix-colors.homeManagerModules.default
+    homeConfFiles.features.fonts
+  ];
+
   fontProfiles.enable = true;
 
   programs.kitty = {
