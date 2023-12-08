@@ -15,6 +15,6 @@
 
   home.file.".emacs.d/config.org" = {
     source = ./config.org;
-    onChange = "rm ~/.emacs.d/config.el";
+    onChange = "rm ~/.emacs.d/config.el || true";
   };
 }

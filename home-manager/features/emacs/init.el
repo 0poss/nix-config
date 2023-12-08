@@ -1,7 +1,7 @@
-(setq custom-file (concat user-emacs-directory "custom.el"))
+;;; init.el ---  -*- lexical-binding: t; no-byte-compile: t -*-
 
-(setq config-file (concat user-emacs-directory "config.org"))
-(org-babel-load-file config-file)
-
-(when (file-exists-p custom-file)
-  (load custom-file))
+(require 'org)
+(org-babel-load-file
+ (expand-file-name "config.org"
+                   (file-name-directory (or load-file-name
+                                            (buffer-file-name)))))
