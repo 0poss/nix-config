@@ -5,7 +5,7 @@
     homeConfFiles.features.fonts
     homeConfFiles.features.desktop.wm.sway
     homeConfFiles.features.emacs
-    homeConfFiles.features.shell
+    homeConfFiles.features.shell.zsh
   ];
 
   home = {
