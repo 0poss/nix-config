@@ -1,104 +1,483 @@
 #+TITLE: 0poss's emacs config
 #+AUTHOR: 0poss
 
+* Basic Configuration
+** Emacs Behavior
+*** Editing text
+Disable those trailing whitespaces.
 #+BEGIN_SRC emacs-lisp
-  (require 'package)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (package-initialize)
-
-  (unless package-archive-contents
-    (package-refresh-contents))
-
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
+  (add-hook 'before-save-hook #'whitespace-cleanup)
 #+END_SRC
 
+This minor mode makes Emacs smartest about where words here. It makes jumping in
+camelCase words possible, but only in ~prog-mode~.
 #+BEGIN_SRC emacs-lisp
-  (use-package emacs
-    :config
-    (menu-bar-mode -1)
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (delete-selection-mode t)
-    (setq custom-file
-	  (concat user-emacs-directory "custom.el"))
-    (load custom-file)
+  (add-hook 'prog-mode-hook #'subword-mode)
+#+END_SRC
+
+**** Indentation
+Spaces over tabs, because ofc.
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+  (add-hook 'prog-mode-hook
+            (lambda () (setq indent-tabs-mode
+                             nil)))
+#+END_SRC
+
+*** Cursor
+Smoother scrolling (don't make the screen jump for the cursor to be centered
+and have a margin bewteen the cursor and the last or first line of the screen).
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-conservatively 101
+        scroll-margin 2)
+#+END_SRC
+
+I also prefer the bar cursor.
+#+BEGIN_SRC emacs-lisp
+  (setq-default cursor-type 'bar)
+#+END_SRC
+
+Highlight current line in ~prog-mode~.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook #'hl-line-mode)
+#+END_SRC
+
+*** Programming Modes
+**** Lines Number
+Display line numbers on the left-side of the buffer for all programming modes.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+#+END_SRC
+
+*** Cleaning
+**** Backups
+I don't want these dirty backups laying everywhere. I also want them numbered
+and keep a bunch of em instead something goes wrong for a while.
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("" . "~/.emacs.d/.backups"))
+        backup-by-copying t
+        make-backup-files t
+        version-control t
+        delete-old-versions t
+        kept-old-versions 10
+        kept-new-versions 10
+        vc-make-backup-files t)
+#+END_SRC
+
+**** Autosaving
+Similarly, I want my files to be automatically saved every 30s (that's the
+default actually) and every 100 inputs.
+#+BEGIN_SRC emacs-lisp
+  (setq auto-save-timeout 30
+        auto-save-interval 100)
+#+END_SRC
+
+**** Custom File
+I don't want Emacs to pollute my ~init.el~ with custom variables, put it in another file.
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (concat user-emacs-directory "custom.el"))
+  (when (file-exists-p custom-file)
+    (load custom-file))
+#+END_SRC
+
+**** Scratch
+Set a nice message in the scratch buffer.
+#+BEGIN_SRC emacs-lisp
+  (setq-default initial-scratch-message
+                (concat ";; Happy Hacking, " user-login-name " !\n\n"))
+#+END_SRC
+
+*** Emacs Politeness
+I don't want to type "yes" or "no" in full letters, "y" and "n" are enough.
+#+BEGIN_SRC emacs-lisp
+  (setq use-short-answer t)
+#+END_SRC
+
+*** Misc
+Increase Emacs's default undo memory and enable auto-save.
+#+BEGIN_SRC emacs-lisp
+  (setq undo-limit (* 1024 1024 10)
+        auto-save-default t)
+#+END_SRC
+
+Make Emacs take space from other windows when resizing.
+#+BEGIN_SRC emacs-lisp
+  (setq window-combination-resize t)
+#+END_SRC
+
+** Visual Configuration
+Disable the sound bell.
+#+BEGIN_SRC emacs-lisp
+  (setq ring-bell-function 'ignore)
+#+END_SRC
+
+Make cursor stretch over long character (e.g. tabs).
+#+BEGIN_SRC emacs-lisp
+  (setq x-stretch-cursor t)
+#+END_SRC
+
+Draw underline a little bit lower.
+#+BEGIN_SRC emacs-lisp
+  (setq x-underline-at-descent-line t)
+#+END_SRC
+
+Did you know Emacs could be transparent ?
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'default-frame-alist '(alpha-background . 0.98))
+#+END_SRC
+
+*** Modeline Modules
+Display battery indicator only if a battery is available.
+#+BEGIN_SRC emacs-lisp
+  (let ((battery-str (battery)))
+    (unless (or (equal "Battery status not available" battery-str)
+                (string-match-p (regexp-quote "N/A") battery-str))
+      (display-battery-mode t)))
+#+END_SRC
+
+Display column number in modeline.
+#+BEGIN_SRC emacs-lisp
+  (column-number-mode t)
+#+END_SRC
+
+*** Fonts
+#+BEGIN_SRC emacs-lisp
+  (defun oposs/set-font ()
+    (cond
+     ((find-font (font-spec :name "Berkeley Mono"))
+      (set-frame-font "Berkeley Mono-10.5"))
+     ((find-font (font-spec :name "Iosevka"))
+      (set-frame-font "Iosevka-10.5"))
+     ((find-font (font-spec :name "Terminus"))
+      (set-frame-font "Terminus-10.5"))))
+
+  (oposs/set-font)
+  (add-hook 'server-after-make-frame-hook #'oposs/set-font)
+#+END_SRC
+
+* Package Management
+** Repositories
+#+BEGIN_SRC emacs-lisp
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("elpa"  . "https://elpa.gnu.org/packages/")))
+#+END_SRC
+
+Bootstrap ~straight.el~.
+Straight provides reproducibility and Git-cloned packages.
+#+BEGIN_SRC emacs-lisp
+  (setq straight-check-for-modifications '(check-on-save find-when-checking))
+
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+END_SRC
+
+If ~:fork t~ is set with ~use-package~, ~straight.el~ will try to clone the repo on a different username but on the same host.
+#+BEGIN_SRC emacs-lisp
+  (setq straight-host-usernames
+        '((github . "0poss")))
+#+END_SRC
+
+Install ~use-package~.
+Also enable some debugging if Emacs is ran with ~-debug-init~.
+#+BEGIN_SRC emacs-lisp
+  (if init-file-debug
+      (setq use-package-verbose t
+            use-package-minimum-reported-time 0
+            use-package-compute-statistics t
+            use-package-inject-hooks t
+            debug-on-error t)
+    (setq use-package-expand-minimally t))
+
+  (straight-use-package '(use-package :build t))
+  (setq use-package-always-ensure t)
+#+END_SRC
+
+* Keybinding Management
+** Which-key
+A kinda "keybinding autosuggestion".
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :straight (:build t)
+    :defer t
+    :init (which-key-mode t)
+    :diminish which-key-mode
+    :custom
+    (which-key-idle-delay 0.75)
+    (which-key-popup-type 'minibuffer))
+#+END_SRC
+
+** Hydra
+#+BEGIN_SRC emacs-lisp
+  (use-package pretty-hydra
+    :straight (:build t))
+#+END_SRC
+
+* Packages Configuration
+** Autocompletion
+*** Vertico
+Absolutely necessary package.
+Vertico provides a UI for basically all completions.
+#+BEGIN_SRC emacs-lisp
+  (use-package vertico
+    :straight (:build t)
+    :init
+    (vertico-mode t)
+    :custom
+    (vertico-cycle t))
+#+END_SRC
+
+*** Marginalia
+Marginalia provides annotations next to minibuffer completions.
+#+BEGIN_SRC emacs-lisp
+  (use-package marginalia
+    :straight (:build t)
+    :init
+    (marginalia-mode t))
+#+END_SRC
+
+*** Corfu
+I prefer corfu to company, it has less complexity and works fine almost out-of-the-box.
+#+BEGIN_SRC emacs-lisp
+  (use-package corfu
+    :straight (:build t)
+
+    :hook (after-init . global-corfu-mode)
 
     :custom
-    (tab-always-indent 'complete)
-    (visible-bell t)
-    (cursor-type 'bar))
+    (corfu-cycle t)
+    (corfu-auto t)
+    (corfu-auto-prefix 1)
+    (corfu-on-exact-match nil)
+
+    :config
+    ;; For Corfu I don't want keybindings that I have not explicitly configured.
+    (setq corfu-map (make-sparse-keymap))
+
+    :bind
+    (:map corfu-map
+          ([tab] . corfu-next)
+          ([backtab] . corfu-previous)
+          ([remap next-line] . corfu-next)
+          ([remap previous-line] . corfu-previous)
+          ([up] . corfu-popupinfo-scroll-down)
+          ([down] . corfu-popupinfo-scroll-up)
+          ("M-d" . corfu-popupinfo-toggle)
+          ("RET" . corfu-insert)))
 #+END_SRC
 
+Bring recently used options up the list.
+#+BEGIN_SRC emacs-lisp
+  (use-package corfu-history
+    :hook (global-corfu-mode . corfu-history-mode))
+#+END_SRC
+
+Display documentation next to the selected completion entry.
+#+BEGIN_SRC emacs-lisp
+  (use-package corfu-popupinfo
+    :hook (global-corfu-mode . corfu-popupinfo-mode)
+    :commands (corfu-popupinfo-scroll-down
+               corfu-popupinfo-scroll-up)
+    :custom
+    (corfu-popupinfo-delay 0.0))
+#+END_SRC
+
+Make corfu work in the terminal.
+#+BEGIN_SRC emacs-lisp
+  (use-package corfu-terminal
+    :straight (:build t)
+    :if (not (display-graphic-p))
+    :hook (global-corfu-mode . corfu-terminal-mode))
+#+END_SRC
+
+Display some nice little icons at the left of the completion entry.
+#+BEGIN_SRC emacs-lisp
+  (use-package kind-icon
+    :straight (:build t)
+    :after corfu
+    :commands (kind-icon-margin-formatter)
+    :custom
+    (kind-icon-default-face 'corfu-default)
+    :config
+    (add-to-list 'corfu-margin-formatters
+                 #'kind-icon-margin-formatter)
+    (unless (display-graphic-p)
+      (setq kind-icon-use-icons nil)))
+#+END_SRC
+
+*** Orderless
+#+BEGIN_SRC emacs-lisp
+  (use-package orderless
+    :straight (:build t)
+    :defer t
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion))))
+    (orderless-component-separator #'orderless-escapable-split-on-space))
+#+END_SRC
+
+*** Yasnippet
+Get those snippets.
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :disabled
+    :straight (:build t)
+    :defer t
+    :init
+    (yas-global-mode))
+
+  (use-package yasnippet-snippets
+    :disabled
+    :straight (:build t)
+    :defer t
+    :after yasnippet)
+#+END_SRC
+
+*** Eglot
+#+BEGIN_SRC emacs-lisp
+  (use-package eglot
+    :straight (:build t)
+    :bind
+    (:prefix
+     "C-l"
+     :prefix-map oposs/lsp-command-map
+     ("C-a" . eglot-code-actions)
+     ("= =" . eglot-format)
+     ("C-r" . eglot-rename)
+     ("C-d" . xref-find-definitions)
+     ("C-s" . xref-find-references)
+     ("C-h" . eldoc)
+     ("C-p" . eglot-shutdown)
+     ("C-S-p" . eglot-shutdown-all))
+    :config
+    (setq eglot-server-programs nil)
+    (add-to-list 'eglot-server-programs
+                 '(nix-mode . ("nil"
+                               :initializationOptions
+                               (:formatting
+                                (:command [ "nixpkgs-fmt" ])
+                                :nix
+                                (:flake (:authEvalInputs t))))))
+    :custom
+    (eglot-autoshutdown t)
+    (read-process-output-max (* 1024 1024))
+    :hook (nix-mode . eglot-ensure))
+#+END_SRC
+
+*** Languages
+**** Nix
+Have that ~nix-mode~.
+#+BEGIN_SRC emacs-lisp
+  (use-package nix-mode
+    :straight (:build t)
+    :mode
+    "\\.nix\\'")
+#+END_SRC
+
+** Applications
+*** Version Control
+**** Magit
+
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :straight (:build t)
+    :commands (magit
+               magit-blame
+               magit-clone
+               magit-diff
+               magit-init
+               magit-status
+               magit-stage-file
+               magit-unstage-file))
+#+END_SRC
+
+*** Project Management
+**** Recentf
+Keep track of the last 100 opened files.
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
-    :config
-    (recentf-mode t))
+    :straight (:build t :type built-in)
+    :hook
+    (after-init . recentf-mode)
+    :custom
+    (recentf-max-saved-items 100))
 #+END_SRC
 
-** Key-bindings
+** Motion
+*** Consult
+Consult provides some nice search and navigation commands.
 #+BEGIN_SRC emacs-lisp
-  (use-package major-mode-hydra
-    :disabled
-
-    :ensure t
-
+  (use-package consult
+    :straight (:build t)
     :bind
-    ("M-SPC" . major-mode-hydra))
+    (([remap goto-line]        . consult-goto-line)
+     ([remap switch-to-buffer] . consult-buffer)
 
-  (use-package pretty-hydra
-    :ensure t)
+     ("M-s l" . consult-line)
+     ("M-s j" . consult-grep)
+     ("M-s S-j" . consult-ripgrep)
+     ("M-s M-j" . consult-git-grep)
+     ("M-s k" . consult-find)
+     ("M-s S-k" . consult-locate)
+     ("M-s M-k" . consult-fd)
+
+     ("M-g g" . consult-goto-line)
+     ("M-g M-g" . consult-goto-line)
+     ("M-g m" . consult-mark)
+     ("M-g M-m" . consult-global-mark)
+     ("M-g i" . consult-imenu)
+     ("M-g r" . consult-recent-file)
+
+     ("M-g t" . consult-theme)))
 #+END_SRC
 
-** Window & Frame Management
-*** Font
-default-font-presets - lets user specify presets for the default-font, with utilities to scale and cycle fonts.
+*** Avy
+Replacement for ~vim-sneak~
 #+BEGIN_SRC emacs-lisp
-  (use-package default-font-presets
-    :ensure t
-
-    :bind
-    (("C-+" . default-font-presets-scale-increase)
-     ("C--" . default-font-presets-scale-decrease)
-     ("C-=" . default-font-presets-scale-reset)
-     ("C-M-+" . default-font-presets-forward)
-     ("C-M--" . default-font-presets-backward)
-     ("<C-mouse-4>" . default-font-presets-scale-increase)
-     ("<C-mouse-5>" . default-font-presets-scale-decrease))
-
-    :init
-    (add-to-list 'default-frame-alist
-		 '(font . "Berkeley Mono-9"))
-
-    :config
-    (setq default-font-presets-list
-	  (list "Berkeley Mono-9"
-		"Iosevka Nerd Font-10"
-		"Terminus-9")))
+  (use-package avy
+    :straight (:build t)
+    :bind ("M-s M-s" . avy-goto-char-2))
 #+END_SRC
 
-*** Layout
-winner - [built-in] “Undo”(and “redo”) changes in the window configuration with the key commands.
+** Window Management
+*** Winner
 #+BEGIN_SRC emacs-lisp
   (use-package winner
+    :straight (:build t :type built-in)
+    :commands (winner-undo winner-redo)
     :hook
     (after-init . winner-mode)
-
     :custom
-    (winner-boring-buffers-regexp '("\*.*\*")))
+    (winner-boring-buffers-regexp '("\\*.*\\*"))
+    ;; We're gonna bind them while configuring ace-window.
+    (winner-dont-bind-my-keys t))
 #+END_SRC
 
-*** Switching
-ace-window - Quickly switch windows.
+*** Ace-window
+Nice window management keybindings.
+I also setup a little window management menu with ~pretty-hydra~.
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
-    :ensure t
-
+    :straight (:build t)
+    :commands
+    (ace-swap-window
+     ace-select-window
+     ace-delete-window
+     acde-delete-other-windows)
     :bind
-    (([remap other-window] . ace-select-window)
-     ([remap delete other-windows] . ace-delete-other-windows))
-
+    ([remap other-window] . ace-select-window)
     :pretty-hydra
     ("Actions"
      (("TAB" other-window "switch")
@@ -117,135 +496,35 @@ ace-window - Quickly switch windows.
      "Undo/Redo"
      (("C-u" winner-undo "undo")
       ("C-r" winner-redo "redo")))
-
     :bind
     ("C-c w" . ace-window-hydra/body)
-
     :custom
     (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 #+END_SRC
 
-** Minibuffer
-vertico - Vertico provides a minimalistic vertical completion UI, which is based on the default completion system.
+** File Management
 #+BEGIN_SRC emacs-lisp
-  (use-package vertico
-    :ensure t
-
-    :config
-    (vertico-mode t)
-    (setq vertico-cycle t))
-#+END_SRC
-
-Marginalia - Rich annotations in the minibuffer
-#+BEGIN_SRC emacs-lisp
-  (use-package marginalia
-    :ensure t
-
-    :config
-    (marginalia-mode t))
-#+END_SRC
-
-Embark - Minibuffer actions and context menu
-#+BEGIN_SRC emacs-lisp
-  (use-package embark
-    :disabled)
-#+END_SRC
-
-Consult - Useful search and navigation commands
-#+BEGIN_SRC emacs-lisp
-  (use-package consult
-    :ensure t
-
-    :bind
-    (([remap goto-line]        . consult-goto-line)
-     ([remap isearch-forward]  . consult-line)
-     ([remap switch-to-buffer] . consult-buffer)
-
-     ("M-s j" . consult-grep)
-     ("M-s S-j" . consult-ripgrep)
-     ("M-s M-j" . consult-git-grep)
-     ("M-s k" . consult-find)
-     ("M-s S-k" . consult-locate)
-     ("M-s M-k" . consult-fd)
-
-     ("M-g g" . consult-goto-line)
-     ("M-g M-g" . consult-goto-line)
-     ("M-g m" . consult-mark)
-     ("M-g M-m" . consult-global-mark)
-     ("M-g i" . consult-imenu)
-
-     ("M-g t" . consult-theme)))
-#+END_SRC
-
-*** Fuzzy & Narrowing
-Orderless - Advanced completion style
-#+BEGIN_SRC emacs-lisp
-  (use-package orderless
-    :ensure t
-
+  (use-package treemacs
+    :straight (:build t)
     :custom
-    (completion-styles '(orderless basic))
-    (completion-category-overrides '((file (styles basic partial-completion))))
-    (orderless-component-separator #'orderless-escapable-split-on-space))
-#+END_SRC
-
-** Navigation
-#+BEGIN_SRC emacs-lisp
-  (use-package sr-speedbar
-    :ensure t
-
-    :custom
-    (speedbar-show-unknown-files t)
-    (speedbar-use-images t)
-    (speedbar-vc-do-check nil)
-
-    :bind
-    (("C-t" . sr-speedbar-toggle)
-     :map speedbar-key-map
-     ("o" . speedbar-expand-line-descendants)))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package neotree
-    :disabled
-
-    :ensure t
-
+    (treemacs-identation 1)
+    (treemacs-identation-string " ")
+    (treemacs-width 22)
+    (treemacs-position 'right)
+    (treemacs-select-when-already-in-treemacs 'close)
+    (treemacs-show-cursor t)
     :config
-    (setq neo-theme nil)
-
-    :custom
-    (neo-window-position "right")
-
+    (treemacs-resize-icons 17)
     :bind
-    (("C-t" . neotree-toggle)))
+    (("C-t" . treemacs-select-window)))
 #+END_SRC
 
-Avy - Jump to visible text using a char-based decision tree.
-#+BEGIN_SRC emacs-lisp
-  (use-package avy
-    :ensure t
-
-    :bind
-    ("M-s M-s" . avy-goto-char-2))
-#+END_SRC
-
-anzu - displays current match and total matches.
-#+BEGIN_SRC emacs-lisp
-  (use-package anzu
-    :ensure t
-
-    :config
-    (global-anzu-mode t))
-#+END_SRC
-
-** Editing Enhancement
-*** Massive Edit
-Multiple cursors - Mark, edit multiple lines at once.
+** Massive Edits
+*** Multiple cursors
+Multiple cursors.
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
-    :ensure t
-
+    :straight (:build t)
     :bind
     (:prefix
      "M-n"
@@ -256,162 +535,62 @@ Multiple cursors - Mark, edit multiple lines at once.
      ("j" . mc/all-in-region)))
 #+END_SRC
 
-*** Quotes & Parenthesis & Delimiters Handling
-SmartParens - Deals with parens pairs and tries to be smart about it.
+** Edition Enhancement
+*** Tokens
+**** Smartparens
+Smartparens provides a mode automatically inserting closing delimiters and
+commands to move between matching delimiters.
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
-    :ensure t
-
-    :config
+    :straight (:build t)
+    :init
     (require 'smartparens-config)
     (show-smartparens-global-mode t)
-
     :hook
-    ((prog-mode) . turn-on-smartparens-strict-mode)
-
+    (prog-mode . turn-on-smartparens-mode)
     :bind
     (("C-M-f" . sp-forward-sexp)
      ("C-M-b" . sp-backward-sexp)))
 #+END_SRC
 
-rainbow-delimiters - Highlights parentheses, brackets, and braces according to their depth.
+** Appearance
+*** Modeline
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+    :straight (:build t)
+    :hook (after-init . doom-modeline-mode))
+#+END_SRC
+
+*** Tokens
+**** Rainbow Delimiters
+One color for each delimiters (parentheses, brackets, etc.) pairs.
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
-    :ensure t
-
+    :straight (:build t)
     :hook
     (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
-** Appearance
+**** Theme
 #+BEGIN_SRC emacs-lisp
-  (use-package alect-themes
-    :ensure t
+  (use-package doom-themes
+    :straight (:build t)
+    :defer t)
 
-    :config
-    (load-theme 'alect-black-alt t))
+  (use-package alect-themes
+    :straight (:build t)
+    :defer t)
 
   (use-package color-theme-sanityinc-tomorrow
-    :ensure t)
+    :straight (:build t)
+    :defer t)
 
   (use-package color-theme-modern
-    :ensure t)
+    :straight (:build t)
+    :defer t)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (use-package feebleline
-    :ensure t
-
-    :custom
-    (feebleline-show-git-branch t)
-    (feebleline-show-dir t)
-    (feebleline-show-time nil)
-    (feebleline-show-previous-buffer nil)
-
-    :config
-    (feebleline-mode 1))
-#+END_SRC
-
-Solaire mode - Visually distinguish file-visiting windows from other types of windows (like popups or sidebars) by giving them a slightly different background.
-#+BEGIN_SRC emacs-lisp
-  (use-package solaire-mode
-    :ensure t
-
-    :config
-    (solaire-global-mode t))
-#+END_SRC
-
-all-the-icons - A package used to include fancy icons within emacs.
-#+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons
-    :if (display-graphic-p)
-
-    :ensure t)
-#+END_SRC
-
-** Keys Cheat Sheet
-which-key - Display available key bindings in popup. Rewrite of guide-key with added features to improve display.
-#+BEGIN_SRC emacs-lisp
-  (use-package which-key
-    :ensure t
-
-    :config
-    (which-key-mode t)
-
-    :custom
-    (which-key-idle-delay 0.75
-			  which-key-popup-type 'minibuffer))
-#+END_SRC
-
-** Programming
-*** Completion
-corfu - Corfu enhances the default completion in region function with a completion overlay.
-#+BEGIN_SRC emacs-lisp
-  (use-package corfu
-    :ensure t
-
-    :hook
-    ((prog-mode text-mode) . corfu-mode)
-
-    :custom
-    (corfu-cycle t)
-    (corfu-auto t)
-    (corfu-auto-prefix 1)
-    (corfu-on-exact-match nil)
-
-    :config
-    (setq corfu-map
-	  (make-sparse-keymap))
-
-    :bind
-    (:map corfu-map
-	  ([tab] . corfu-next)
-	  ([backtab] . corfu-previous)
-	  ([remap next-line] . corfu-next)
-	  ([remap previous-line] . corfu-previous)
-	  ("RET" . corfu-insert)))
-#+END_SRC
-
-*** Languages
-#+BEGIN_SRC emacs-lisp
-  (use-package nix-mode
-    :ensure t
-
-    :mode
-    "\\.nix\\'")
-#+END_SRC
-
-*** LSP Client
-#+BEGIN_SRC emacs-lisp
-  (use-package eglot
-    :ensure t
-
-    :bind
-    (:prefix
-     "C-l"
-     :prefix-map oposs/lsp-command-map
-     ("C-a" . eglot-code-actions)
-     ("= =" . eglot-format)
-     ("C-r" . eglot-rename)
-     ("C-d" . xref-find-definitions)
-     ("C-s" . xref-find-references)
-     ("C-h" . eldoc)
-     ("C-p" . eglot-shutdown)
-     ("C-S-p" . eglot-shutdown-all))
-
-    :config
-    (setq eglot-server-programs nil)
-    (add-to-list 'eglot-server-programs
-		 '(nix-mode . ("nil"
-			       :initializationOptions
-			       (:formatting
-				(:command [ "nixpkgs-fmt" ])
-				:nix
-				(:flake (:authEvalInputs t))))))
-
-    :custom
-    (eglot-autoshutdown t)
-
-    :hook
-    (nix-mode . eglot-ensure))
+  (add-hook 'after-init-hook (defun oposs/load-theme ()
+                               (load-theme 'doom-dark+ t)))
 #+END_SRC
