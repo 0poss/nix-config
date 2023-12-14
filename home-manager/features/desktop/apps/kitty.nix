@@ -18,9 +18,10 @@ in
     };
 
     settings = {
+      background_opacity = "0.95";
       cursor_shape = "beam";
-      scrollback_lines = 4000;
-      scrollback_pager_history_size = 2048;
+      scrollback_lines = 100000;
+      scrollback_pager_history_size = 50000;
       window_padding_width = 5;
       enable_audio_bell = "no";
       foreground = "#${colors.base05}";
