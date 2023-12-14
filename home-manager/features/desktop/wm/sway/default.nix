@@ -163,7 +163,7 @@ in
 
             "${mod}+Return" = "exec ${terminal}";
             "${mod}+e" = "exec emacsclient --create-frame";
-            "${mod}+d" = "exec ${menu}";
+            "${mod}+x" = "exec ${menu}";
             "${mod}+Shift+q" = "kill";
             "${mod}+Alt+p" = ''exec grim -g "$(slurp -d)" - | wl-copy -t image/png'';
 
