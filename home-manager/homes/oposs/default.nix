@@ -6,6 +6,7 @@
     homeConfFiles.features.desktop.wm.sway
     homeConfFiles.features.emacs
     homeConfFiles.features.shell.zsh
+    homeConfFiles.features.desktop.apps.nyxt
   ];
 
   home = {
