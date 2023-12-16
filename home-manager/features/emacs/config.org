@@ -104,7 +104,8 @@ Set a nice message in the scratch buffer.
     (interactive)
     (setq target-date (cond ((stringp target-date) (oposs/date-to-int target-date))
                             ((numberp target-date) target-date)
-                            ((oposs/random-date))))
+                            ((oposs/random-date)))
+          begin-time (current-time))
     (if (string=
          (format-time-string "%A" target-date)
          (nth 1
@@ -113,8 +114,8 @@ Set a nice message in the scratch buffer.
                (mapcar (lambda (i) (list (string-to-char (int-to-string i))
                                          (oposs/get-locale-day i)))
                        (number-sequence 0 6)))))
-        (progn
-          (message "Good job.")
+        (let ((time-delta (float-time (time-since begin-time))))
+          (message (concat "Good job. Time taken : " (number-to-string time-delta) "s."))
           t)
       (progn
         (message "WRONG !!!")
