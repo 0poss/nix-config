@@ -83,8 +83,58 @@ I don't want Emacs to pollute my ~init.el~ with custom variables, put it in anot
 **** Scratch
 Set a nice message in the scratch buffer.
 #+BEGIN_SRC emacs-lisp
+  (defun oposs/random-date (&optional start-date end-date)
+    (defun date-to-int (str)
+      (time-convert (date-to-time str) 'integer))
+    (let ((start-date (date-to-int (or start-date "1600-01-01")))
+          (end-date (date-to-int (or end-date "2300-01-01"))))
+      (+ start-date (random (- end-date start-date)))))
+
+  (defun oposs/get-locale-day (index)
+    (format-time-string
+     "%A"
+     (encode-time
+      (decoded-time-add
+       (parse-time-string "1970-01-04 00:00")
+       (make-decoded-time :day index)))))
+
+  (defun oposs/doomsday-random ()
+    (interactive)
+    (setq random-date (oposs/random-date))
+    (if (string=
+         (format-time-string "%A" random-date)
+         (nth 1 (read-multiple-choice
+                 (format "What day did %s fall ?" (format-time-string "%B %d, %Y" random-date))
+                 (mapcar (lambda (i) (list (string-to-char (int-to-string i))
+                                           (oposs/get-locale-day i)))
+                         (number-sequence 0 6)))))
+        (progn
+          (message "Good job.")
+          t)
+      (progn
+        (message "WRONG !!!")
+        nil)))
+
+  (defalias 'oposs/play-game 'oposs/doomsday-random)
+
+  (defun oposs/random-elem (list)
+    (nth (random (length list)) list))
+
+  (setq oposs/greeting-messages
+        (list
+         (format ";; EMACS %s TRIAL\n;; %d DAYS REMAINING\n;; Join the Church of St IGNUcius and get Emacs and much more\n\n"
+                 emacs-version (+ 1 (random 30)))
+         (concat ";; Happy Hacking, " user-login-name " !\n\n")
+         ";; Hi stranger.\n;; It's okay.\n;; You can look at my font.\n\n"
+         (concat
+          ";; Hello " user-login-name ". *scary high pitched laugh*\n"
+          ";; You don't know me but I know you.\n"
+          ";; I want to play a game.\n"
+          ";; Eval this buffer.\n\n"
+          "(unless (oposs/play-game) (sleep-for 1) (kill-emacs))")))
+
   (setq-default initial-scratch-message
-                (concat ";; Happy Hacking, " user-login-name " !\n\n"))
+                (oposs/random-elem oposs/greeting-messages))
 #+END_SRC
 
 *** Emacs Politeness
@@ -593,4 +643,12 @@ One color for each delimiters (parentheses, brackets, etc.) pairs.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'after-init-hook (defun oposs/load-theme ()
                                (load-theme 'doom-dark+ t)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :straight (:build t)
+    :hook (after-init . turn-on-undo-tree-mode)
+    :custom
+    (undo-tree-visualizer-diff t))
 #+END_SRC
