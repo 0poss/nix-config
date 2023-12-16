@@ -83,11 +83,12 @@ I don't want Emacs to pollute my ~init.el~ with custom variables, put it in anot
 **** Scratch
 Set a nice message in the scratch buffer.
 #+BEGIN_SRC emacs-lisp
+  (defun oposs/date-to-int (str)
+    (time-convert (date-to-time str) 'integer))
+
   (defun oposs/random-date (&optional start-date end-date)
-    (defun date-to-int (str)
-      (time-convert (date-to-time str) 'integer))
-    (let ((start-date (date-to-int (or start-date "1600-01-01")))
-          (end-date (date-to-int (or end-date "2300-01-01"))))
+    (let ((start-date (oposs/date-to-int (or start-date "1600-01-01")))
+          (end-date (oposs/date-to-int (or end-date "2300-01-01"))))
       (+ start-date (random (- end-date start-date)))))
 
   (defun oposs/get-locale-day (index)
@@ -98,16 +99,20 @@ Set a nice message in the scratch buffer.
        (parse-time-string "1970-01-04 00:00")
        (make-decoded-time :day index)))))
 
-  (defun oposs/doomsday-random ()
+  (defun oposs/doomsday-one (&optional target-date)
+    "Play a single instance of Conway's Doomsday game."
     (interactive)
-    (setq random-date (oposs/random-date))
+    (setq target-date (cond ((stringp target-date) (oposs/date-to-int target-date))
+                            ((numberp target-date) target-date)
+                            ((oposs/random-date))))
     (if (string=
-         (format-time-string "%A" random-date)
-         (nth 1 (read-multiple-choice
-                 (format "What day did %s fall ?" (format-time-string "%B %d, %Y" random-date))
-                 (mapcar (lambda (i) (list (string-to-char (int-to-string i))
-                                           (oposs/get-locale-day i)))
-                         (number-sequence 0 6)))))
+         (format-time-string "%A" target-date)
+         (nth 1
+              (read-multiple-choice
+               (format "On what day did %s fall ?" (format-time-string "%B %d, %Y" target-date))
+               (mapcar (lambda (i) (list (string-to-char (int-to-string i))
+                                         (oposs/get-locale-day i)))
+                       (number-sequence 0 6)))))
         (progn
           (message "Good job.")
           t)
@@ -115,26 +120,49 @@ Set a nice message in the scratch buffer.
         (message "WRONG !!!")
         nil)))
 
-  (defalias 'oposs/play-game 'oposs/doomsday-random)
+  (defun oposs/doomsday-one-or-quit (&optional target-date)
+    "Play a single instance of Conway's Doomsday game. Kills Emacs if you fail."
+    (interactive)
+    (unless (oposs/doomsday-one target-date)
+      (sleep-for 1)
+      (kill-emacs)))
+
+  (defun oposs/doomsday-game ()
+    "Play Conway's Doomsday game."
+    (interactive)
+    (defun oposs/doomsday-loop (date)
+      (while (not (oposs/doomsday-one date))
+        (sleep-for 1)))
+    (while t
+      (oposs/doomsday-loop (oposs/random-date))
+      (sleep-for 2)))
 
   (defun oposs/random-elem (list)
     (nth (random (length list)) list))
 
+  (defalias 'oposs/play-game 'oposs/doomsday-one)
   (setq oposs/greeting-messages
         (list
-         (format ";; EMACS %s TRIAL\n;; %d DAYS REMAINING\n;; Join the Church of St IGNUcius and get Emacs and much more\n\n"
-                 emacs-version (+ 1 (random 30)))
-         (concat ";; Happy Hacking, " user-login-name " !\n\n")
-         ";; Hi stranger.\n;; It's okay.\n;; You can look at my font.\n\n"
          (concat
-          ";; Hello " user-login-name ". *scary high pitched laugh*\n"
-          ";; You don't know me but I know you.\n"
-          ";; I want to play a game.\n"
-          ";; Eval this buffer.\n\n"
-          "(unless (oposs/play-game) (sleep-for 1) (kill-emacs))")))
+          ";; EMACS " emacs-version " TRIAL\n"
+          ";; " (int-to-string (+ 1 (random 30))) " DAYS REMAINING\n"
+          ";; Join the Church of St IGNUcius and get Emacs and much more\n\n")
+
+         (concat ";; Happy Hacking, " user-login-name " !\n\n")
+
+         ";; Hi stranger.\n;; It's okay.\n;; You can look at my font.\n\n"
+
+         ;;(concat
+         ;; ";; Hello " user-login-name ". *scary high pitched laugh*\n"
+         ;; ";; You don't know me but I know you.\n"
+         ;; ";; I want to play a game.\n"
+         ;; ";; Eval this buffer.\n\n"
+         ;; "(unless (oposs/play-game) (sleep-for 1) (kill-emacs))")
+         ))
 
   (setq-default initial-scratch-message
                 (oposs/random-elem oposs/greeting-messages))
+  (add-hook 'after-init-hook 'oposs/doomsday-one-or-quit)
 #+END_SRC
 
 *** Emacs Politeness
