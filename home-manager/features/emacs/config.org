@@ -1,6 +1,8 @@
 #+TITLE: 0poss's emacs config
 #+AUTHOR: 0poss
 
+TODO : Don't auto-jump in help buffer
+
 * Basic Configuration
 ** Emacs Behavior
 *** Editing text
@@ -584,6 +586,7 @@ I also setup a little window management menu with ~pretty-hydra~.
 ** File Management
 #+BEGIN_SRC emacs-lisp
   (use-package treemacs
+    :disabled
     :straight (:build t)
     :custom
     (treemacs-identation 1)
@@ -622,7 +625,6 @@ commands to move between matching delimiters.
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :straight (:build t)
-    :init
     (require 'smartparens-config)
     (show-smartparens-global-mode t)
     :hook
@@ -667,11 +669,15 @@ One color for each delimiters (parentheses, brackets, etc.) pairs.
   (use-package color-theme-modern
     :straight (:build t)
     :defer t)
+
+  (use-package haki-theme
+    :straight (:build t)
+    :defer t)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'after-init-hook (defun oposs/load-theme ()
-                               (load-theme 'doom-dark+ t)))
+                               (load-theme 'haki t)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
