@@ -87,8 +87,8 @@ Set a nice message in the scratch buffer.
     (time-convert (date-to-time str) 'integer))
 
   (defun oposs/random-date (&optional start-date end-date)
-    (let ((start-date (oposs/date-to-int (or start-date "1600-01-01")))
-          (end-date (oposs/date-to-int (or end-date "2300-01-01"))))
+    (let ((start-date (oposs/date-to-int (or start-date "1600-01-01 00:00")))
+          (end-date (oposs/date-to-int (or end-date "2300-01-01 00:00"))))
       (+ start-date (random (- end-date start-date)))))
 
   (defun oposs/get-locale-day (index)
