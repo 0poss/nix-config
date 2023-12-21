@@ -625,6 +625,7 @@ commands to move between matching delimiters.
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :straight (:build t)
+    :config
     (require 'smartparens-config)
     (show-smartparens-global-mode t)
     :hook
