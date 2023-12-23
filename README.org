@@ -1,20 +1,16 @@
 #+TITLE: 0poss's nix config
 #+AUTHOR: 0poss
 
-* NixOS flake configuration
+* NixOS Flake Configuration
 This is my full NixOS configuration.
 
-* TODO Stuff to do
-- Secure boot
-- Find a way to secure the local configuration.
-  Normal users should be able to modify their home-manager configuration, without being able to backdoor the system (i.e. modifying the NixOS configuration).
-- Setup CCache, including for kernel building.
-- Probably some cleanup. Some stuff aren't where they should be.
-- Create a VM configuration for CTFs.
+* Notable Features
+- [X] Secure Boot
+- [ ] CCache
+- [ ] Easily deployable VMs, most notably for running untrused binaries
 
-* Coding convention
-There's not much :
-- I format everything with [[https://github.com/nix-community/nixpkgs-fmt][nixpkgs-fmt]].
+* Coding Convention
+- Format everything with [[https://github.com/nix-community/nixpkgs-fmt][nixpkgs-fmt]].
 - No relative ~imports~ to upper directories. Instead, if a module needs to be accessed from elsewhere in the flake, create or add a reference to it in the ~default.nix~ file inside the parent directory. It can then be imported using ~homeConfFiles~ or ~nixosConfFiles~.
   + Pros :
     * Relative imports are dirty and can be hard to understand for an unfamiliar reader. Referencing imports from the root of the flake puts forward the full logical path of the imported module.
@@ -26,32 +22,32 @@ There's not much :
   + Example :
 
     Don't do :
-     #+begin_src nix
-  # home-manager/users/oposs/default.nix
-  {
-    imports = [ ../base ];
-  }
-#+end_src
+    #+begin_src nix
+      # home-manager/users/oposs/default.nix
+      {
+        imports = [ ../base ];
+      }
+    #+end_src
     Do :
-     #+begin_src nix
-  # home-manager/users/oposs/default.nix
-  { homeConfFiles, ... }:
-  {
-    imports = with homeConfFiles; [ users.base ];
-  }
-#+end_src
     #+begin_src nix
-  # home-manager/users/default.nix
-  {
-    base = ./base;
-  }
-#+end_src
+      # home-manager/users/oposs/default.nix
+      { homeConfFiles, ... }:
+      {
+        imports = with homeConfFiles; [ users.base ];
+      }
+    #+end_src
     #+begin_src nix
-  # home-manager/default.nix
-  {
-    users = import ./users;
-  }
-#+end_src
+      # home-manager/users/default.nix
+      {
+        base = ./base;
+      }
+    #+end_src
+    #+begin_src nix
+      # home-manager/default.nix
+      {
+        users = import ./users;
+      }
+    #+end_src
 
 * Credits
 Thanks [[https://github.com/Misterio77][Misterio77]] for his nice [[https://github.com/Misterio77/nix-config][config]].
