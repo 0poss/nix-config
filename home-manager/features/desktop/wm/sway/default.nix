@@ -16,8 +16,6 @@ in
 
   home.packages = with pkgs; [ grim slurp wl-clipboard ];
 
-  services.emacs.enable = config.programs.emacs.enable;
-
   wayland.windowManager.sway =
     let
       mod = sway-cfg.modifier;
@@ -162,7 +160,7 @@ in
             "${mod}+Shift+b" = "reload";
 
             "${mod}+Return" = "exec ${terminal}";
-            "${mod}+e" = "exec emacsclient --create-frame";
+            "${mod}+e" = "exec emacs";
             "${mod}+x" = "exec ${menu}";
             "${mod}+Shift+q" = "kill";
             "${mod}+Alt+p" = ''exec grim -g "$(slurp -d)" - | wl-copy -t image/png'';
