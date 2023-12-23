@@ -14,6 +14,7 @@
 
     ./hardware-configuration.nix
     ./persist.nix
+    ./secureboot.nix
   ];
 
   features.standard-disk-layout = {
@@ -35,7 +36,7 @@
   networking.hostName = "mini-newton";
 
   environment = with pkgs; {
-    systemPackages = [ git home-manager vim ];
+    systemPackages = [ git home-manager vim sbctl ];
   };
 
   security.chromiumSuidSandbox.enable = true;
