@@ -18,7 +18,7 @@ in
     };
 
     settings = {
-      background_opacity = "0.95";
+      background_opacity = "0.90";
       cursor_shape = "beam";
       scrollback_lines = 100000;
       scrollback_pager_history_size = 50000;

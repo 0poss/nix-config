@@ -204,7 +204,7 @@ Draw underline a little bit lower.
 
 Did you know Emacs could be transparent ?
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 0.98))
+  (add-to-list 'default-frame-alist '(alpha-background . 0.90))
 #+END_SRC
 
 *** Modeline Modules
@@ -223,17 +223,16 @@ Display column number in modeline.
 
 *** Fonts
 #+BEGIN_SRC emacs-lisp
-  (defun oposs/set-font ()
-    (cond
-     ((find-font (font-spec :name "Berkeley Mono"))
-      (set-frame-font "Berkeley Mono-10.5"))
-     ((find-font (font-spec :name "Iosevka"))
-      (set-frame-font "Iosevka-10.5"))
-     ((find-font (font-spec :name "Terminus"))
-      (set-frame-font "Terminus-10.5"))))
+  (setq oposs/font (cond
+                    ((find-font (font-spec :name "Berkeley Mono"))
+                     "Berkeley Mono-10.5")
+                    ((find-font (font-spec :name "Iosevka"))
+                     "Iosevka-10.5")
+                    ((find-font (font-spec :name "Terminus"))
+                     "Terminus-10.5")))
 
-  (oposs/set-font)
-  (add-hook 'server-after-make-frame-hook #'oposs/set-font)
+  (custom-set-faces '(fixed-pitch ((t :family oposs/font)))
+                    '(font ((t :family oposs/font))))
 #+END_SRC
 
 * Package Management
