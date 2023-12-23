@@ -8,6 +8,7 @@
     "/persist" = {
       directories = [
         "/etc/nixos"
+        "/etc/secureboot"
         "/var/log"
       ];
 

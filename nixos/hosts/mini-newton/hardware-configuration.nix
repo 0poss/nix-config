@@ -1,9 +1,9 @@
-{ config, pkgs, ... }:
+{ lib, inputs, config, pkgs, ... }:
 {
   hardware.enableRedistributableFirmware = true;
 
   boot.loader = {
-    systemd-boot.enable = true;
+    systemd-boot.enable = !config.boot.lanzaboote.enable or false;
     efi.canTouchEfiVariables = true;
   };
 
