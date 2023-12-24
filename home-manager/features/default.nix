@@ -1,6 +1,9 @@
 {
-  desktop = import ./desktop;
+  apps = import ./apps;
   emacs = ./emacs;
-  shell = import ./shell;
   fonts = ./fonts.nix;
+  shell = import ./shell;
+  sway = import ./sway;
+  swaylock = ./swaylock.nix;
+  wallpapers = ./wallpapers;
 }
