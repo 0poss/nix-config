@@ -5,7 +5,7 @@
   hms = "home-manager switch";
   hmb = "home-manager build";
   nr = "nixos-rebuild";
-  nrs = "nixos-rebuild switch";
+  nrs = "sudo nixos-rebuild switch";
   nrb = "nixos-rebuild build";
   nrvm = "nixos-rebuild build-vm";
 }

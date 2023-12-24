@@ -2,16 +2,22 @@
 let
   sway-cfg = config.wayland.windowManager.sway.config;
   colors = config.colorScheme.colors;
+  inherit (builtins)
+    toString;
+  inherit (lib)
+    listToAttrs
+    nameValuePair
+    range;
 in
 {
-  imports = [
-    homeConfFiles.features.desktop.swaylock
-    homeConfFiles.features.desktop.apps.chromium
-    homeConfFiles.features.desktop.apps.kitty
-    homeConfFiles.features.desktop.apps.i3status-rust
-    homeConfFiles.features.desktop.apps.kickoff
-    homeConfFiles.features.desktop.wallpapers
-    homeConfFiles.features.fonts
+  imports = with homeConfFiles.features; [
+    apps.chromium
+    apps.i3status-rust
+    apps.kickoff
+    apps.kitty
+    fonts
+    swaylock
+    wallpapers
   ];
 
   home.packages = with pkgs; [ grim slurp wl-clipboard ];
@@ -50,9 +56,13 @@ in
         up = "k";
         right = "l";
 
-        startup = [
-          { command = "mako"; always = true; }
-        ];
+        startup = [{ command = "mako"; always = true; }];
+
+        fonts = {
+          names = [ config.fontProfiles.monospace.family ];
+          style = "Regular";
+          size = 7.5;
+        };
 
         input = {
           "*" = {
@@ -62,14 +72,8 @@ in
 
         output = {
           "*" = {
-            bg = ''"'' + (builtins.toString config.selected-wallpaper) + ''" fill'';
+            bg = ''"'' + (toString config.selected-wallpaper) + ''" fill'';
           };
-        };
-
-        gaps = {
-          inner = 5;
-          smartBorders = "on";
-          smartGaps = true;
         };
 
         floating = {
@@ -152,9 +156,9 @@ in
                 k10 = "agrave";
               }
               else
-                lib.listToAttrs
-                  (map (i: lib.nameValuePair ("k" + toString i) (toString (lib.mod i 10)))
-                    (lib.range 1 10));
+                listToAttrs
+                  (map (i: nameValuePair ("k" + toString i) (toString (lib.mod i 10)))
+                    (range 1 10));
           in
           {
             "${mod}+Shift+b" = "reload";

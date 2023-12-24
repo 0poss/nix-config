@@ -3,10 +3,10 @@
   imports = [
     inputs.nix-colors.homeManagerModules.default
     homeConfFiles.features.fonts
-    homeConfFiles.features.desktop.wm.sway
+    homeConfFiles.features.sway
     homeConfFiles.features.emacs
     homeConfFiles.features.shell.zsh
-    homeConfFiles.features.desktop.apps.nyxt
+    homeConfFiles.features.apps.nyxt
   ];
 
   home = {
