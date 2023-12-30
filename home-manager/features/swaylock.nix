@@ -9,7 +9,7 @@
       indicator-radius = 100;
       line-color = "ffffff";
       show-failed-attempts = true;
-      image = toString config.selected-lockscreen;
+      image = toString config.wallpaper.lockscreen;
     };
   };
 }
