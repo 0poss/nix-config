@@ -76,9 +76,7 @@ in
           };
         };
 
-        floating = {
-          border = 1;
-        };
+        floating.border = 1;
 
         window = {
           border = 1;
@@ -164,6 +162,7 @@ in
             "${mod}+Shift+b" = "reload";
 
             "${mod}+Return" = "exec ${terminal}";
+            "${mod}+c" = "exec chromium";
             "${mod}+e" = "exec emacs";
             "${mod}+x" = "exec ${menu}";
             "${mod}+Shift+q" = "kill";
