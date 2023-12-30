@@ -8,10 +8,6 @@ in
   # fail, so disable it.
   services.logrotate.checkConfig = false;
 
-  environment = {
-    memoryAllocator.provider = mkHardOpt "graphene-hardened";
-  };
-
   boot = {
     kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_6_5_hardened.override
       {
@@ -35,7 +31,7 @@ in
 
             TRIM_UNUSED_KSYMS = hye;
             XFS_FS = hno;
-            AIO = lib.mkOverride 99 lib.kernel.no;
+            AIO = hno;
             INPUT_EVBUG = hno;
             FTRACE = hno;
             KPROBES = hno;
@@ -124,12 +120,28 @@ in
     };
   };
 
-  systemd.coredump.enable = false;
+  environment.memoryAllocator.provider = mkHardOpt "graphene-hardened";
+
+  systemd.coredump.enable = mkHardOpt false;
 
   security = {
     apparmor = {
       enable = mkHardOpt true;
       killUnconfinedConfinables = mkHardOpt true;
+    };
+
+    sudo.enable = false;
+    doas = {
+      enable = true;
+      extraRules = [
+        {
+          # TODO : instead of using `groups=["wheel"]`, enumerate all users
+          # which are in the wheel group and add them to the `users` list.
+          # It shouldn't change anything for normal use cases.
+          groups = [ "wheel" ];
+          persist = true;
+        }
+      ];
     };
 
     lockKernelModules = mkHardOpt true;
