@@ -72,7 +72,7 @@ in
 
         output = {
           "*" = {
-            bg = ''"'' + (toString config.selected-wallpaper) + ''" fill'';
+            bg = ''"'' + (toString config.wallpaper.background) + ''" fill'';
           };
         };
 
