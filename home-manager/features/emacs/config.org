@@ -204,7 +204,7 @@ Draw underline a little bit lower.
 
 Did you know Emacs could be transparent ?
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 0.90))
+  (add-to-list 'default-frame-alist '(alpha-background . 0.92))
 #+END_SRC
 
 *** Modeline Modules
