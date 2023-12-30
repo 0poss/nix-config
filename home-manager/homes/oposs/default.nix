@@ -1,17 +1,18 @@
 { lib, pkgs, inputs, config, overlays, homeConfFiles, ... }:
 {
-  imports = [
+  imports = with homeConfFiles.features; [
     inputs.nix-colors.homeManagerModules.default
-    homeConfFiles.features.fonts
-    homeConfFiles.features.sway
-    homeConfFiles.features.emacs
-    homeConfFiles.features.shell.zsh
-    homeConfFiles.features.apps.nyxt
+    emacs
+    fonts
+    sway
+    hyprland
+    shell.zsh
+    apps.nyxt
   ];
 
   home = {
     stateVersion = lib.mkDefault "23.05";
-    keyboard.layout = lib.mkDefault "us";
+    keyboard.layout = lib.mkDefault "fr";
   };
 
   programs.home-manager.enable = true;
@@ -25,6 +26,10 @@
       bat
       pfetch
     ];
+
+    sessionVariables = {
+      EDITOR = "emacs";
+    };
   };
 
   nixpkgs.overlays = (lib.attrValues overlays);
