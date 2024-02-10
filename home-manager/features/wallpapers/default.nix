@@ -3,7 +3,7 @@
   options.wallpaper = {
     background = lib.mkOption {
       type = lib.types.path;
-      default = ./m606.jpg;
+      default = ./babel.png;
       description = "Path to the wallpaper.";
     };
 

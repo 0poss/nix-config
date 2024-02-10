@@ -5,14 +5,13 @@
     emacs
     fonts
     sway
-    hyprland
     shell.zsh
     apps.nyxt
   ];
 
   home = {
     stateVersion = lib.mkDefault "23.05";
-    keyboard.layout = lib.mkDefault "fr";
+    keyboard.layout = lib.mkDefault "us";
   };
 
   programs.home-manager.enable = true;
