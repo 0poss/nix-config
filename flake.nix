@@ -53,11 +53,14 @@
       nixosConfigurations = {
         "nixos-teletubbies" = mkNixOS [ nixosConfFiles.hosts.teletubbies ];
         "nixos-mini-newton" = mkNixOS [ nixosConfFiles.hosts.mini-newton ];
+        "nixos-baby-quine" = mkNixOS [ nixosConfFiles.hosts.baby-quine ];
         "nixos-puffy" = mkNixOS [ nixosConfFiles.hosts.puffy ];
       };
 
       homeConfigurations = {
-        "home-oposs" = mkHome [ homeConfFiles.homes.oposs ] nixpkgs.legacyPackages."x86_64-linux";
+        "home-oposs" = mkHome
+          [ homeConfFiles.homes.oposs ]
+          nixpkgs.legacyPackages."x86_64-linux";
       };
     };
 }
