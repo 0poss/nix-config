@@ -428,6 +428,8 @@ Get those snippets.
 #+BEGIN_SRC emacs-lisp
   (use-package eglot
     :straight (:build t)
+    :commands
+    (eglot eglot-ensure)
     :bind
     (:prefix
      "C-l"
@@ -449,10 +451,11 @@ Get those snippets.
                                 (:command [ "nixpkgs-fmt" ])
                                 :nix
                                 (:flake (:authEvalInputs t))))))
+    (add-to-list 'eglot-server-programs
+                 '((c++-mode c-mode) "clangd"))
     :custom
     (eglot-autoshutdown t)
-    (read-process-output-max (* 1024 1024))
-    :hook (nix-mode . eglot-ensure))
+    (read-process-output-max (* 1024 1024)))
 #+END_SRC
 
 *** Flymake
@@ -480,6 +483,8 @@ Have that ~nix-mode~.
 #+BEGIN_SRC emacs-lisp
   (use-package nix-mode
     :straight (:build t)
+    :hook
+    (nix-mode . eglot-ensure)
     :mode
     "\\.nix\\'")
 #+END_SRC
