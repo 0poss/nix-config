@@ -231,8 +231,7 @@ Display column number in modeline.
                     ((find-font (font-spec :name "Terminus"))
                      "Terminus-10.5")))
 
-  (custom-set-faces '(fixed-pitch ((t :family oposs/font)))
-                    '(font ((t :family oposs/font))))
+  (set-frame-font oposs/font)
 #+END_SRC
 
 * Package Management
