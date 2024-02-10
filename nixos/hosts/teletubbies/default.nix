@@ -10,7 +10,9 @@
     features.nixpkgs
     features.wireless
     features.locale
-    features.pie-overlay
+    features.pipewire
+    #features.pie-overlay
+    features.adb
 
     ./hardware-configuration.nix
     ./persist.nix
