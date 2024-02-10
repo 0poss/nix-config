@@ -456,6 +456,12 @@ Get those snippets.
     :hook (nix-mode . eglot-ensure))
 #+END_SRC
 
+*** Flymake
+#+BEGIN_SRC emacs-lisp
+  (use-package flymake
+    :straight (:build t :type built-in))
+#+END_SRC
+
 *** Languages
 **** Nix
 Have that ~nix-mode~.
@@ -464,6 +470,36 @@ Have that ~nix-mode~.
     :straight (:build t)
     :mode
     "\\.nix\\'")
+#+END_SRC
+
+**** Lean4
+#+BEGIN_SRC emacs-lisp
+  (use-package lean4-mode
+    :straight (lean4-mode
+               :type git
+               :host github
+               :repo "leanprover/lean4-mode"
+               :files ("*.el" "data")
+               :build t)
+    :mode
+    "\\.lean\\'")
+#+END_SRC
+
+**** Rust
+#+BEGIN_SRC emacs-lisp
+  (use-package rustic
+    :straight (:built t)
+    :config
+    (setq rustic-format-trigger 'on-save
+          rustic-lsp-client 'eglot)
+    :hook (rust-mode . eglot-ensure)
+    :mode ("\\.rs\\'" . rustic-mode))
+#+END_SRC
+
+**** GDScript
+#+BEGIN_SRC emacs-lisp
+  (use-package gdscript-mode
+    :straight (:build t))
 #+END_SRC
 
 ** Applications
