@@ -231,8 +231,7 @@ Display column number in modeline.
                     ((find-font (font-spec :name "Terminus"))
                      "Terminus-10.5")))
 
-  (custom-set-faces '(fixed-pitch ((t :family oposs/font)))
-                    '(font ((t :family oposs/font))))
+  (set-frame-font oposs/font)
 #+END_SRC
 
 * Package Management
@@ -463,6 +462,19 @@ Get those snippets.
 #+END_SRC
 
 *** Languages
+**** Coq
+#+BEGIN_SRC emacs-lisp
+  (use-package company-coq
+    :straight (:build t)
+    :hook (coq-mode . company-coq-mode)
+    :config
+    (setq proof-splash-enable nil))
+
+  (use-package proof-general
+    :straight (:build t)
+    :mode ("\\.v\\'" . coq-mode))
+#+END_SRC
+
 **** Nix
 Have that ~nix-mode~.
 #+BEGIN_SRC emacs-lisp
