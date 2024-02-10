@@ -42,6 +42,10 @@
     {
       inherit overlays;
 
+      devShells = forAllSystems (system: import ./dev-shells {
+        pkgs = nixpkgs.legacyPackages.${system};
+      });
+
       packages = forAllSystems (system: import ./pkgs {
         pkgs = nixpkgs.legacyPackages.${system};
       });
