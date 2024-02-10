@@ -60,13 +60,27 @@ in
                 block = "backlight";
                 device = "intel_backlight";
               }
+
+              {
+                block = "battery";
+                format = " $icon $percentage ";
+                full_threshold = 80;
+                good = 80;
+                warning = 20;
+                critical = 10;
+                empty_threshold = 5;
+              }
             ]
 
             ++ [
 
               {
+                block = "sound";
+              }
+
+              {
                 block = "memory";
-                format = " $icon $mem_used_percents.eng(w:2) ";
+                format = " $icon $mem_total_used/$mem_total $mem_used_percents.eng(w:2) ";
                 format_alt = " $icon_swap $swap_used_percents.eng(w:2) ";
               }
 
@@ -78,7 +92,7 @@ in
                 interval = 20;
                 warning = 100;
                 alert = 40;
-                format = " $icon $path: $available/$total ";
+                format = " $icon $path: $used/$total ";
                 click = [
                   { button = "right"; update = true; }
                   { button = "left"; update = true; }
