@@ -6,6 +6,8 @@ This is my full NixOS configuration.
 
 * Notable Features
 - [X] Secure Boot
+- [X] us-intl in sway
+- [X] Fn keys (volume, brightness, ...)
 - [ ] CCache
 - [ ] Easily deployable VMs, most notably for running untrused binaries
 

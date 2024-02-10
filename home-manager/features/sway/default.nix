@@ -67,6 +67,8 @@ in
         input = {
           "*" = {
             xkb_layout = config.home.keyboard.layout;
+          } // lib.optionalAttrs ("us" == config.home.keyboard.layout) {
+            xkb_variant = "intl";
           };
         };
 
@@ -189,6 +191,12 @@ in
             "${mod}+Shift+${down}" = "move down";
             "${mod}+Shift+${up}" = "move up";
             "${mod}+Shift+${right}" = "move right";
+
+            "XF86AudioMute" = "exec ${pkgs.pulseaudioFull}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+            "XF86AudioLowerVolume" = "exec ${pkgs.pulseaudioFull}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+            "XF86AudioRaiseVolume" = "exec ${pkgs.pulseaudioFull}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+            "XF86MonBrightnessDown" = "exec ${pkgs.brightnessctl}/bin/brightnessctl s 5%-";
+            "XF86MonBrightnessUp" = "exec ${pkgs.brightnessctl}/bin/brightnessctl s 5%+";
 
             "${mod}+${ws.k1}" = "workspace 1";
             "${mod}+${ws.k2}" = "workspace 2";
