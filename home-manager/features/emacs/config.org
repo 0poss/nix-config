@@ -225,11 +225,11 @@ Display column number in modeline.
 #+BEGIN_SRC emacs-lisp
   (setq oposs/font (cond
                     ((find-font (font-spec :name "Berkeley Mono"))
-                     "Berkeley Mono-10.5")
+                     "Berkeley Mono-9.5")
                     ((find-font (font-spec :name "Iosevka"))
-                     "Iosevka-10.5")
+                     "Iosevka-9.5")
                     ((find-font (font-spec :name "Terminus"))
-                     "Terminus-10.5")))
+                     "Terminus-9.5")))
 
   (set-frame-font oposs/font)
 #+END_SRC
