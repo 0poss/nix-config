@@ -6,6 +6,7 @@
     fonts
     sway
     shell.zsh
+    shell.eza
     apps.nyxt
   ];
 
