@@ -25,6 +25,7 @@
       fzf
       bat
       pfetch
+      binary-ninja
     ];
 
     sessionVariables = {

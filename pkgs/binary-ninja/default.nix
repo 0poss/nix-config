@@ -23,7 +23,7 @@ stdenv.mkDerivation {
   src = requireFile rec {
     name = "BinaryNinja-personal.zip";
     url = "https://binary.ninja/recover/";
-    sha256 = "0391hfyq80k5jrxj6nkfgijxq5f9wkycpqr60dw86flv2rcpj7n2";
+    sha256 = "1hq8w2l0jrvll9gynzzhyzs8vkrsj31gbvp4v13hqr857rkf2j6w";
     message = ''
       Stable download URLs for Binary Ninja are not available.
       Please visit ${url} and find the download link for ${name},
