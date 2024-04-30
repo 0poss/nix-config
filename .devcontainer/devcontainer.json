@@ -1,0 +1,12 @@
+{
+    "build": { "dockerfile": "Dockerfile" },
+    "features": {
+    },
+    "customizations": {
+    "codespaces": {
+      "openFiles": [
+        ".git/config"
+        ]
+      }
+    }
+  }
