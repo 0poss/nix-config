@@ -225,11 +225,11 @@ Display column number in modeline.
 #+BEGIN_SRC emacs-lisp
   (setq oposs/font (cond
                     ((find-font (font-spec :name "Berkeley Mono"))
-                     "Berkeley Mono-9.5")
+                     "Berkeley Mono-9")
                     ((find-font (font-spec :name "Iosevka"))
-                     "Iosevka-9.5")
+                     "Iosevka-9")
                     ((find-font (font-spec :name "Terminus"))
-                     "Terminus-9.5")))
+                     "Terminus-9")))
 
   (set-frame-font oposs/font)
 #+END_SRC
@@ -453,6 +453,7 @@ Get those snippets.
                                 (:flake (:authEvalInputs t))))))
     (add-to-list 'eglot-server-programs
                  '((c++-mode c-mode) "clangd"))
+    (setq eglot-ignored-server-capabilities '(:inlayHintProvider))
     :custom
     (eglot-autoshutdown t)
     (read-process-output-max (* 1024 1024)))
