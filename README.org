@@ -7,9 +7,20 @@ This is my full NixOS configuration.
 * Notable Features
 - [X] Secure Boot
 - [X] us-intl in sway
-- [X] Fn keys (volume, brightness, ...)
+- [ ] Screenshare
+- [ ] Fn keys:
+  - [X] Volume
+  - [X] Brightness
+  - [ ] Media keys
 - [ ] CCache
 - [ ] Easily deployable VMs, most notably for running untrused binaries
+- Emacs:
+  - [ ] Auto-suggest words in text-mode based on dictonary and other words in the documents.
+  - [ ] Increase undo buffer.
+  - [ ] Eglot:
+    - [ ] Change config s.t. when pressing RET on a function suggestion, the arguments are also inserting, not only the function's name, in function definitions.
+- Zsh:
+  - [ ] Fuzzy ~C-r~.
 
 * Coding Convention
 - Format everything with [[https://github.com/nix-community/nixpkgs-fmt][nixpkgs-fmt]].
