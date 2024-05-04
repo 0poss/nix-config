@@ -1,5 +1,6 @@
 #+TITLE: 0poss's emacs config
 #+AUTHOR: 0poss
+#+STARTUP: latexpreview
 
 * Basic Configuration
 ** Emacs Behavior
@@ -202,7 +203,7 @@ Draw underline a little bit lower.
 
 Did you know Emacs could be transparent ?
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 0.92))
+  (add-to-list 'default-frame-alist '(alpha-background . 1.0))
 #+END_SRC
 
 *** Modeline Modules
@@ -427,6 +428,7 @@ Get those snippets.
      ("C-h" . eldoc)
      ("C-p" . eglot-shutdown)
      ("C-S-p" . eglot-shutdown-all))
+
     :config
     (setq eglot-server-programs nil)
     (add-to-list 'eglot-server-programs
@@ -535,6 +537,21 @@ Keep track of the last 100 opened files.
 #+END_SRC
 
 *** Org Mode
+**** Base configuration
+Configure org-mode.
+
+We'll start by using ~visual-fill-column-mode~ for centering whole documents.
+#+BEGIN_SRC emacs-lisp
+  (use-package visual-fill-column
+    :straight (:build t)
+    :commands
+    (visual-fill-column-mode)
+    :custom
+    (visual-fill-column-width 150)
+    (visual-fill-column-center-text t))
+#+END_SRC
+
+Configure org's faces.
 #+BEGIN_SRC emacs-lisp
   (custom-set-faces
    '(org-level-1 ((t (:inherit variable-pitch :height 1.40))))
@@ -551,14 +568,58 @@ Keep track of the last 100 opened files.
    '(org-block-end-line ((t (:inherit org-block-begin-line))))
 
    '(org-code ((t (:inherit fixed-pitch)))))
+#+END_SRC
+
+Configure org itself.
+#+BEGIN_SRC emacs-lisp
+  (defun oposs/org-mode-hook ()
+    (variable-pitch-mode t)
+    (org-indent-mode t)
+    (visual-fill-column-mode))
 
   (use-package org-mode
     :straight (:build t :type built-in)
     :hook
-    (org-mode . variable-pitch-mode)
+    (org-mode . oposs/org-mode-hook)
     :custom
     (org-hide-emphasis-markers t)
-    (org-hide-leading-stars t))
+    (org-hide-leading-stars t)
+    (org-preview-latex-default-process 'dvisvgm)
+    (org-format-latex-options
+     '(:foreground default
+                   :background default
+                   :scale 0.5))
+    (org-format-latex-header "\\documentclass{article}
+  \\usepackage[usenames]{color}
+  [DEFAULT-PACKAGES]
+  [PACKAGES]
+  \\pagestyle{empty}             % do not remove
+  % The settings below are copied from fullpage.sty
+  \\setlength{\\textwidth}{\\paperwidth}
+  \\addtolength{\\textwidth}{-3cm}
+  \\setlength{\\oddsidemargin}{1.5cm}
+  \\addtolength{\\oddsidemargin}{-2.54cm}
+  \\setlength{\\evensidemargin}{\\oddsidemargin}
+  \\setlength{\\textheight}{\\paperheight}
+  \\addtolength{\\textheight}{-\\headheight}
+  \\addtolength{\\textheight}{-\\headsep}
+  \\addtolength{\\textheight}{-\\footskip}
+  \\addtolength{\\textheight}{-3cm}
+  \\setlength{\\topmargin}{1.5cm}
+  \\addtolength{\\topmargin}{-2.54cm}"))
+#+END_SRC
+
+LaTeX test case:
+
+\begin{align}
+  Pr \left[ \mathbf{PubK^{CPA}_{\mathcal{A},\Pi}(n)} = 1 \right] \leq \frac{1}{2} + \epsilon(n)
+\end{align}
+
+**** Slides
+#+BEGIN_SRC emacs-lisp
+  (use-package org-tree-slide
+    :straight (:build t)
+    :commands (org-tree-slide-mode))
 #+END_SRC
 
 ** Motion
