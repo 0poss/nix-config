@@ -1,8 +1,6 @@
 #+TITLE: 0poss's emacs config
 #+AUTHOR: 0poss
 
-TODO : Don't auto-jump in help buffer
-
 * Basic Configuration
 ** Emacs Behavior
 *** Editing text
@@ -54,7 +52,7 @@ Display line numbers on the left-side of the buffer for all programming modes.
 *** Cleaning
 **** Backups
 I don't want these dirty backups laying everywhere. I also want them numbered
-and keep a bunch of em instead something goes wrong for a while.
+and keep a bunch of em in case something goes wrong for a while.
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist '(("" . "~/.emacs.d/.backups"))
         backup-by-copying t
@@ -155,17 +153,17 @@ Set a nice message in the scratch buffer.
 
          ";; Hi stranger.\n;; It's okay.\n;; You can look at my font.\n\n"
 
-         ;;(concat
-         ;; ";; Hello " user-login-name ". *scary high pitched laugh*\n"
-         ;; ";; You don't know me but I know you.\n"
-         ;; ";; I want to play a game.\n"
-         ;; ";; Eval this buffer.\n\n"
-         ;; "(unless (oposs/play-game) (sleep-for 1) (kill-emacs))")
+         (concat
+          ";; Hello " user-login-name ". *scary high pitched laugh*\n"
+          ";; You don't know me but I know you.\n"
+          ";; I want to play a game.\n"
+          ";; Eval this buffer.\n\n"
+          "(unless (oposs/play-game) (sleep-for 1) (kill-emacs))")
          ))
 
   (setq-default initial-scratch-message
                 (oposs/random-elem oposs/greeting-messages))
-  (add-hook 'after-init-hook 'oposs/doomsday-one-or-quit)
+  ;;(add-hook 'after-init-hook 'oposs/doomsday-one-or-quit)
 #+END_SRC
 
 *** Emacs Politeness
@@ -219,19 +217,6 @@ Display battery indicator only if a battery is available.
 Display column number in modeline.
 #+BEGIN_SRC emacs-lisp
   (column-number-mode t)
-#+END_SRC
-
-*** Fonts
-#+BEGIN_SRC emacs-lisp
-  (setq oposs/font (cond
-                    ((find-font (font-spec :name "Berkeley Mono"))
-                     "Berkeley Mono-9")
-                    ((find-font (font-spec :name "Iosevka"))
-                     "Iosevka-9")
-                    ((find-font (font-spec :name "Terminus"))
-                     "Terminus-9")))
-
-  (set-frame-font oposs/font)
 #+END_SRC
 
 * Package Management
@@ -549,6 +534,33 @@ Keep track of the last 100 opened files.
     (recentf-max-saved-items 100))
 #+END_SRC
 
+*** Org Mode
+#+BEGIN_SRC emacs-lisp
+  (custom-set-faces
+   '(org-level-1 ((t (:inherit variable-pitch :height 1.40))))
+   '(org-level-2 ((t (:inherit variable-pitch :height 1.35))))
+   '(org-level-3 ((t (:inherit variable-pitch :height 1.30))))
+   '(org-level-4 ((t (:inherit variable-pitch :height 1.25))))
+   '(org-level-5 ((t (:inherit variable-pitch :height 1.20))))
+   '(org-level-6 ((t (:inherit variable-pitch :height 1.15))))
+   '(org-level-7 ((t (:inherit variable-pitch :height 1.10))))
+   '(org-level-8 ((t (:inherit variable-pitch :height 1.05))))
+
+   '(org-block ((t (:inherit fixed-pitch :background "#303030"))))
+   '(org-block-begin-line ((t (:inherit fixed-pitch :background "#262626" :weight semi-bold))))
+   '(org-block-end-line ((t (:inherit org-block-begin-line))))
+
+   '(org-code ((t (:inherit fixed-pitch)))))
+
+  (use-package org-mode
+    :straight (:build t :type built-in)
+    :hook
+    (org-mode . variable-pitch-mode)
+    :custom
+    (org-hide-emphasis-markers t)
+    (org-hide-leading-stars t))
+#+END_SRC
+
 ** Motion
 *** Consult
 Consult provides some nice search and navigation commands.
@@ -689,6 +701,28 @@ commands to move between matching delimiters.
 #+END_SRC
 
 ** Appearance
+*** Fonts
+#+BEGIN_SRC emacs-lisp
+  (defun oposs/select-font (&rest font-names)
+    (seq-find (lambda (font-name)
+                (find-font (font-spec :name font-name)))
+              font-names))
+
+  (setq oposs/fixed-pitch-font
+        (oposs/select-font "Berkeley Mono"
+                           "Iosevka"
+                           "Terminus"))
+
+  (setq oposs/variable-pitch-font
+        (oposs/select-font "Iosevka Comfy Wide Motion Duo"))
+
+  (custom-set-faces
+   `(default ((t (:family ,oposs/fixed-pitch-font :height 85))))
+   `(variable-pitch ((t (:family ,oposs/variable-pitch-font))))
+   '(variable-pitch-text ((t (:inherit variable-pitch))))
+   `(fixed-pitch ((t (:family ,oposs/fixed-pitch-font)))))
+#+END_SRC
+
 *** Modeline
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
@@ -727,17 +761,15 @@ One color for each delimiters (parentheses, brackets, etc.) pairs.
   (use-package haki-theme
     :straight (:build t)
     :defer t)
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
+  (use-package dingo-theme
+    :straight (:build t :host sourcehut
+                      :repo "zyd/dingo-theme")
+    :config
+    (add-to-list
+     'custom-theme-load-path
+     (expand-file-name "straight/build/dingo-theme/" straight-base-dir)))
+
   (add-hook 'after-init-hook (defun oposs/load-theme ()
-                               (load-theme 'haki t)))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package undo-tree
-    :straight (:build t)
-    :hook (after-init . turn-on-undo-tree-mode)
-    :custom
-    (undo-tree-visualizer-diff t))
+                               (load-theme 'dingo t)))
 #+END_SRC
