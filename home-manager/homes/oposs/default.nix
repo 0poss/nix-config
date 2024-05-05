@@ -26,12 +26,16 @@
       bat
       pfetch
       binary-ninja
+      nil # nix language server
+      nixpkgs-fmt # nix formatter
+      texliveMedium
+      pandoc
+      python3
+      sage
     ];
-
-    sessionVariables = {
-      EDITOR = "emacs";
-    };
   };
+
+  services.emacs.defaultEditor = config.services.emacs.enable;
 
   nixpkgs.overlays = (lib.attrValues overlays);
 
@@ -42,6 +46,10 @@
       package = pkgs.berkeley-mono.override {
         sha256 = "0f2237irx2a0ss325bgpzgxhvv5gz66j5xn2k3fnzb9pfzbjvvxf";
       };
+    };
+    regular = {
+      family = "Iosevka Comfy Wide Motion Duo";
+      package = pkgs.iosevka-comfy.comfy-wide-motion-duo;
     };
   };
 

@@ -16,7 +16,8 @@ This is my full NixOS configuration.
 - [ ] Easily deployable VMs, most notably for running untrused binaries
 - Emacs:
   - [ ] Auto-suggest words in text-mode based on dictonary and other words in the documents.
-  - [ ] Increase undo buffer.
+  - [ ] Increase undo buffer size.
+  - [ ] Org-like markdown rendering.
   - [ ] Eglot:
     - [ ] Change config s.t. when pressing RET on a function suggestion, the arguments are also inserting, not only the function's name, in function definitions.
 - Zsh:

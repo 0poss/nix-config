@@ -209,10 +209,11 @@ Did you know Emacs could be transparent ?
 *** Modeline Modules
 Display battery indicator only if a battery is available.
 #+BEGIN_SRC emacs-lisp
-  (let ((battery-str (battery)))
-    (unless (or (equal "Battery status not available" battery-str)
-                (string-match-p (regexp-quote "N/A") battery-str))
-      (display-battery-mode t)))
+  (add-hook 'emacs-startup-hook
+            (lambda () (let ((battery-str (battery)))
+                         (unless (or (equal "Battery status not available" battery-str)
+                                     (string-match-p (regexp-quote "N/A") battery-str))
+                           (display-battery-mode t)))))
 #+END_SRC
 
 Display column number in modeline.
@@ -287,10 +288,19 @@ A kinda "keybinding autosuggestion".
 ** Hydra
 #+BEGIN_SRC emacs-lisp
   (use-package pretty-hydra
-    :straight (:build t))
+    :straight (:build t)
+    :defer t
+    :commands (pretty-hydra-define pretty-hydra-define+))
 #+END_SRC
 
 * Packages Configuration
+** Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package esup
+    :straight (:build t)
+    :defer t
+    :commands (esup))
+#+END_SRC
 ** Autocompletion
 *** Vertico
 Absolutely necessary package.
@@ -298,6 +308,7 @@ Vertico provides a UI for basically all completions.
 #+BEGIN_SRC emacs-lisp
   (use-package vertico
     :straight (:build t)
+    :defer t
     :init
     (vertico-mode t)
     :custom
@@ -309,6 +320,7 @@ Marginalia provides annotations next to minibuffer completions.
 #+BEGIN_SRC emacs-lisp
   (use-package marginalia
     :straight (:build t)
+    :defer t
     :init
     (marginalia-mode t))
 #+END_SRC
@@ -318,6 +330,7 @@ I prefer corfu to company, it has less complexity and works fine almost out-of-t
 #+BEGIN_SRC emacs-lisp
   (use-package corfu
     :straight (:build t)
+    :defer t
 
     :hook (after-init . global-corfu-mode)
 
@@ -346,12 +359,14 @@ I prefer corfu to company, it has less complexity and works fine almost out-of-t
 Bring recently used options up the list.
 #+BEGIN_SRC emacs-lisp
   (use-package corfu-history
+    :defer t
     :hook (global-corfu-mode . corfu-history-mode))
 #+END_SRC
 
 Display documentation next to the selected completion entry.
 #+BEGIN_SRC emacs-lisp
   (use-package corfu-popupinfo
+    :defer t
     :hook (global-corfu-mode . corfu-popupinfo-mode)
     :commands (corfu-popupinfo-scroll-down
                corfu-popupinfo-scroll-up)
@@ -362,7 +377,7 @@ Display documentation next to the selected completion entry.
 Make corfu work in the terminal.
 #+BEGIN_SRC emacs-lisp
   (use-package corfu-terminal
-    :straight (:build t)
+    :defer t
     :if (not (display-graphic-p))
     :hook (global-corfu-mode . corfu-terminal-mode))
 #+END_SRC
@@ -371,6 +386,7 @@ Display some nice little icons at the left of the completion entry.
 #+BEGIN_SRC emacs-lisp
   (use-package kind-icon
     :straight (:build t)
+    :defer t
     :after corfu
     :commands (kind-icon-margin-formatter)
     :custom
@@ -412,8 +428,10 @@ Get those snippets.
 
 *** Eglot
 #+BEGIN_SRC emacs-lisp
+
   (use-package eglot
     :straight (:build t)
+    :defer t
     :commands
     (eglot eglot-ensure)
     :bind
@@ -428,41 +446,63 @@ Get those snippets.
      ("C-h" . eldoc)
      ("C-p" . eglot-shutdown)
      ("C-S-p" . eglot-shutdown-all))
-
-    :config
+    :init
     (setq eglot-server-programs nil)
-    (add-to-list 'eglot-server-programs
-                 '(nix-mode . ("nil"
-                               :initializationOptions
-                               (:formatting
-                                (:command [ "nixpkgs-fmt" ])
-                                :nix
-                                (:flake (:authEvalInputs t))))))
-    (add-to-list 'eglot-server-programs
-                 '((c++-mode c-mode) "clangd"))
+    :config
     (setq eglot-ignored-server-capabilities '(:inlayHintProvider))
     :custom
     (eglot-autoshutdown t)
-    (read-process-output-max (* 1024 1024)))
+    (read-process-output-max (* 8 1024 1024)))
 #+END_SRC
 
 *** Flymake
 #+BEGIN_SRC emacs-lisp
   (use-package flymake
-    :straight (:build t :type built-in))
+    :straight (:build t :type built-in)
+    :defer t)
 #+END_SRC
 
 *** Languages
+**** C/C++
+#+BEGIN_SRC emacs-lisp
+  (use-package c-mode
+    :straight (:build t :type built-in)
+    :defer t
+    :commands (c-mode)
+    :config
+    (add-to-list 'eglot-server-programs
+                   '(c-mode "clangd")))
+
+  (use-package c++-mode
+    :straight (:build t :type built-in)
+    :defer t
+    :commands (c++-mode)
+    :config
+    (add-to-list 'eglot-server-programs
+                   '(c-mode "clangd")))
+#+END_SRC
+
+**** Python
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :straight (:build t)
+    :defer t
+    :hook
+    (python-mode . elpy-enable))
+#+END_SRC
+
 **** Coq
 #+BEGIN_SRC emacs-lisp
   (use-package company-coq
     :straight (:build t)
+    :defer t
     :hook (coq-mode . company-coq-mode)
     :config
     (setq proof-splash-enable nil))
 
   (use-package proof-general
     :straight (:build t)
+    :defer t
     :mode ("\\.v\\'" . coq-mode))
 #+END_SRC
 
@@ -471,6 +511,15 @@ Have that ~nix-mode~.
 #+BEGIN_SRC emacs-lisp
   (use-package nix-mode
     :straight (:build t)
+    :defer t
+    :config
+    (add-to-list 'eglot-server-programs
+                 '(nix-mode . ("nil"
+                               :initializationOptions
+                               (:formatting
+                                (:command [ "nixpkgs-fmt" ])
+                                :nix
+                                (:flake (:authEvalInputs t))))))
     :hook
     (nix-mode . eglot-ensure)
     :mode
@@ -486,6 +535,7 @@ Have that ~nix-mode~.
                :repo "leanprover/lean4-mode"
                :files ("*.el" "data")
                :build t)
+    :defer t
     :mode
     "\\.lean\\'")
 #+END_SRC
@@ -494,6 +544,7 @@ Have that ~nix-mode~.
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
     :straight (:built t)
+    :defer t
     :config
     (setq rustic-format-trigger 'on-save
           rustic-lsp-client 'eglot)
@@ -504,16 +555,20 @@ Have that ~nix-mode~.
 **** GDScript
 #+BEGIN_SRC emacs-lisp
   (use-package gdscript-mode
-    :straight (:build t))
+    :straight (:build t)
+    :defer t
+    :mode ("\\.gd\\'" . gdscript-mode))
 #+END_SRC
 
-** Applications
+**** Haskell
+* Applications
 *** Version Control
 **** Magit
 
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :straight (:build t)
+    :defer t
     :commands (magit
                magit-blame
                magit-clone
@@ -530,6 +585,7 @@ Keep track of the last 100 opened files.
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
     :straight (:build t :type built-in)
+    :defer t
     :hook
     (after-init . recentf-mode)
     :custom
@@ -544,6 +600,7 @@ We'll start by using ~visual-fill-column-mode~ for centering whole documents.
 #+BEGIN_SRC emacs-lisp
   (use-package visual-fill-column
     :straight (:build t)
+    :defer t
     :commands
     (visual-fill-column-mode)
     :custom
@@ -564,7 +621,7 @@ Configure org's faces.
    '(org-level-8 ((t (:inherit variable-pitch :height 1.05))))
 
    '(org-block ((t (:inherit fixed-pitch :background "#303030"))))
-   '(org-block-begin-line ((t (:inherit fixed-pitch :background "#262626" :weight semi-bold))))
+   '(org-block-begin-line ((t (:inherit fixed-pitch :background "#262626" :weight semi-bold :scale 0.6 :slant normal))))
    '(org-block-end-line ((t (:inherit org-block-begin-line))))
 
    '(org-code ((t (:inherit fixed-pitch)))))
@@ -579,6 +636,7 @@ Configure org itself.
 
   (use-package org-mode
     :straight (:build t :type built-in)
+    :defer t
     :hook
     (org-mode . oposs/org-mode-hook)
     :custom
@@ -590,23 +648,23 @@ Configure org itself.
                    :background default
                    :scale 0.5))
     (org-format-latex-header "\\documentclass{article}
-  \\usepackage[usenames]{color}
-  [DEFAULT-PACKAGES]
-  [PACKAGES]
-  \\pagestyle{empty}             % do not remove
-  % The settings below are copied from fullpage.sty
-  \\setlength{\\textwidth}{\\paperwidth}
-  \\addtolength{\\textwidth}{-3cm}
-  \\setlength{\\oddsidemargin}{1.5cm}
-  \\addtolength{\\oddsidemargin}{-2.54cm}
-  \\setlength{\\evensidemargin}{\\oddsidemargin}
-  \\setlength{\\textheight}{\\paperheight}
-  \\addtolength{\\textheight}{-\\headheight}
-  \\addtolength{\\textheight}{-\\headsep}
-  \\addtolength{\\textheight}{-\\footskip}
-  \\addtolength{\\textheight}{-3cm}
-  \\setlength{\\topmargin}{1.5cm}
-  \\addtolength{\\topmargin}{-2.54cm}"))
+    \\usepackage[usenames]{color}
+    [DEFAULT-PACKAGES]
+    [PACKAGES]
+    \\pagestyle{empty}             % do not remove
+    % The settings below are copied from fullpage.sty
+    \\setlength{\\textwidth}{\\paperwidth}
+    \\addtolength{\\textwidth}{-3cm}
+    \\setlength{\\oddsidemargin}{1.5cm}
+    \\addtolength{\\oddsidemargin}{-2.54cm}
+    \\setlength{\\evensidemargin}{\\oddsidemargin}
+    \\setlength{\\textheight}{\\paperheight}
+    \\addtolength{\\textheight}{-\\headheight}
+    \\addtolength{\\textheight}{-\\headsep}
+    \\addtolength{\\textheight}{-\\footskip}
+    \\addtolength{\\textheight}{-3cm}
+    \\setlength{\\topmargin}{1.5cm}
+    \\addtolength{\\topmargin}{-2.54cm}"))
 #+END_SRC
 
 LaTeX test case:
@@ -619,6 +677,7 @@ LaTeX test case:
 #+BEGIN_SRC emacs-lisp
   (use-package org-tree-slide
     :straight (:build t)
+    :defer t
     :commands (org-tree-slide-mode))
 #+END_SRC
 
@@ -628,6 +687,7 @@ Consult provides some nice search and navigation commands.
 #+BEGIN_SRC emacs-lisp
   (use-package consult
     :straight (:build t)
+    :defer t
     :bind
     (([remap goto-line]        . consult-goto-line)
      ([remap switch-to-buffer] . consult-buffer)
@@ -655,6 +715,7 @@ Replacement for ~vim-sneak~
 #+BEGIN_SRC emacs-lisp
   (use-package avy
     :straight (:build t)
+    :defer t
     :bind ("M-s M-s" . avy-goto-char-2))
 #+END_SRC
 
@@ -663,6 +724,7 @@ Replacement for ~vim-sneak~
 #+BEGIN_SRC emacs-lisp
   (use-package winner
     :straight (:build t :type built-in)
+    :defer t
     :commands (winner-undo winner-redo)
     :hook
     (after-init . winner-mode)
@@ -678,6 +740,7 @@ I also setup a little window management menu with ~pretty-hydra~.
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :straight (:build t)
+    :defer t
     :commands
     (ace-swap-window
      ace-select-window
@@ -685,24 +748,25 @@ I also setup a little window management menu with ~pretty-hydra~.
      acde-delete-other-windows)
     :bind
     ([remap other-window] . ace-select-window)
-    :pretty-hydra
-    ("Actions"
-     (("TAB" other-window "switch")
-      ("s" ace-swap-window "swap")
-      ("a" ace-select-window "select")
-      ("d" ace-delete-window "delete")
-      ("D" ace-delete-other-windows "delete others"))
-     "Resize"
-     (("h" shrink-window-horizontally "shrink horizontally")
-      ("j" enlarge-window "enlarge vertically")
-      ("k" shrink-window "shrink vertically")
-      ("l" enlarge-window-horizontally "enlarge horizontally"))
-     "Split"
-     (("b" split-window-below "below")
-      ("r" split-window-right "right"))
-     "Undo/Redo"
-     (("C-u" winner-undo "undo")
-      ("C-r" winner-redo "redo")))
+    :config
+    (pretty-hydra-define+ ace-window-hydra()
+      ("Actions"
+       (("TAB" other-window "switch")
+        ("s" ace-swap-window "swap")
+        ("a" ace-select-window "select")
+        ("d" ace-delete-window "delete")
+        ("D" ace-delete-other-windows "delete others"))
+       "Resize"
+       (("h" shrink-window-horizontally "shrink horizontally")
+        ("j" enlarge-window "enlarge vertically")
+        ("k" shrink-window "shrink vertically")
+        ("l" enlarge-window-horizontally "enlarge horizontally"))
+       "Split"
+       (("b" split-window-below "below")
+        ("r" split-window-right "right"))
+       "Undo/Redo"
+       (("C-u" winner-undo "undo")
+        ("C-r" winner-redo "redo"))))
     :bind
     ("C-c w" . ace-window-hydra/body)
     :custom
@@ -714,6 +778,7 @@ I also setup a little window management menu with ~pretty-hydra~.
   (use-package treemacs
     :disabled
     :straight (:build t)
+    :defer t
     :custom
     (treemacs-identation 1)
     (treemacs-identation-string " ")
@@ -733,6 +798,7 @@ Multiple cursors.
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
     :straight (:build t)
+    :defer t
     :bind
     (:prefix
      "M-n"
@@ -751,6 +817,7 @@ commands to move between matching delimiters.
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :straight (:build t)
+    :defer t
     :config
     (require 'smartparens-config)
     (show-smartparens-global-mode t)
@@ -770,24 +837,30 @@ commands to move between matching delimiters.
               font-names))
 
   (setq oposs/fixed-pitch-font
-        (oposs/select-font "Berkeley Mono"
+        (oposs/select-font "@FIXED-PITCH-FONT@"
+                           "Berkeley Mono"
                            "Iosevka"
                            "Terminus"))
 
   (setq oposs/variable-pitch-font
-        (oposs/select-font "Iosevka Comfy Wide Motion Duo"))
+        (oposs/select-font "@VARIABLE-PITCH-FONT@"
+                           "Iosevka Comfy Wide Motion Duo"
+                           "Times New Roman"))
 
-  (custom-set-faces
-   `(default ((t (:family ,oposs/fixed-pitch-font :height 85))))
-   `(variable-pitch ((t (:family ,oposs/variable-pitch-font))))
-   '(variable-pitch-text ((t (:inherit variable-pitch))))
-   `(fixed-pitch ((t (:family ,oposs/fixed-pitch-font)))))
+  (add-hook
+   'emacs-startup-hook
+   (lambda () (custom-set-faces
+               `(default ((t (:family ,oposs/fixed-pitch-font :height 85))))
+               `(variable-pitch ((t (:family ,oposs/variable-pitch-font))))
+               '(variable-pitch-text ((t (:inherit variable-pitch))))
+               `(fixed-pitch ((t (:family ,oposs/fixed-pitch-font)))))))
 #+END_SRC
 
 *** Modeline
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
     :straight (:build t)
+    :defer t
     :hook (after-init . doom-modeline-mode))
 #+END_SRC
 
@@ -797,32 +870,13 @@ One color for each delimiters (parentheses, brackets, etc.) pairs.
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
     :straight (:build t)
+    :defer t
     :hook
     (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
 **** Theme
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-themes
-    :straight (:build t)
-    :defer t)
-
-  (use-package alect-themes
-    :straight (:build t)
-    :defer t)
-
-  (use-package color-theme-sanityinc-tomorrow
-    :straight (:build t)
-    :defer t)
-
-  (use-package color-theme-modern
-    :straight (:build t)
-    :defer t)
-
-  (use-package haki-theme
-    :straight (:build t)
-    :defer t)
-
   (use-package dingo-theme
     :straight (:build t :host sourcehut
                       :repo "zyd/dingo-theme")
