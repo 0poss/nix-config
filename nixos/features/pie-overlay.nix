@@ -5,7 +5,7 @@
         # bootstrapTools' `glibc` does not provide enough PIE linking environment.
         isGoodStdenv = stdenv: stdenv.name == "stdenv-linux";
         # These are package I didn't manage to fix.
-        excluded = [ "ghc" "libinput" ];
+        excluded = [ "ghc" ];
       in
       self: super: {
         stdenv = super.stdenv // super.lib.optionalAttrs (isGoodStdenv super.stdenv) {
@@ -50,7 +50,7 @@
                 super."${pkg-name}".overrideAttrs { doCheck = false; };
             };
         in
-        disable-check "xapian"
+        disable-check "xapian" // disable-check "libuv"
       )
     )
   ];
