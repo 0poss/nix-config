@@ -1,4 +1,4 @@
-;;; init.el ---  -*- lexical-binding: t; no-byte-compile: t -*-
+;;; init.el ---  -*- lexical-binding: t; no-byte-compile: t; mode: emacs-lisp; coding:utf-8; fill-column: 80 -*-
 
 ;; The following code was taken from
 ;; http://web.archive.org/web/20161118135021/https://holgerschurig.de/en/emacs-efficiently-untangling-elisp/

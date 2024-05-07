@@ -3,7 +3,7 @@
   imports = with nixosConfFiles; [
     features.standard-disk-layout
 
-    #profiles.hardened
+    profiles.hardened
 
     users.oposs
     features.wayland
@@ -11,6 +11,7 @@
     features.wireless
     features.pipewire
     features.locale
+    features.pie-overlay
 
     ./hardware-configuration.nix
     ./persist.nix

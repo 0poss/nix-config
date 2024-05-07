@@ -9,7 +9,7 @@ in
   services.logrotate.checkConfig = false;
 
   boot = {
-    kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_6_5_hardened.override
+    kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_6_7_hardened.override
       {
         #stdenv = pkgs.ccacheStdenv;
         autoModules = true;
