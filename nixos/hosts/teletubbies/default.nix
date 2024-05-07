@@ -12,7 +12,7 @@
     features.locale
     features.pipewire
     #features.pie-overlay
-    features.adb
+    #features.adb
 
     ./hardware-configuration.nix
     ./persist.nix
@@ -41,6 +41,13 @@
   environment = with pkgs; {
     systemPackages = [ git home-manager vim ];
   };
+
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "steam"
+    "steam-original"
+    "steam-run"
+  ];
+  programs.steam.enable = true;
 
   security.chromiumSuidSandbox.enable = true;
 

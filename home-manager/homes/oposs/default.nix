@@ -20,11 +20,14 @@
     username = "oposs";
     homeDirectory = "/home/${config.home.username}";
     packages = with pkgs; [
+      xdg-utils
+      prismlauncher
       ripgrep
       fd
       fzf
       bat
       pfetch
+      nss
     ];
 
     sessionVariables = {
