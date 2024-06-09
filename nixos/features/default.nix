@@ -1,4 +1,5 @@
 {
+  adb = ./adb.nix;
   locale = ./locale.nix;
   nixpkgs = ./nixpkgs.nix;
   pie-overlay = ./pie-overlay.nix;

@@ -1,10 +1,11 @@
-{ lib
-, fetchFromGitHub
-, rustPlatform
-, pkg-config
-, fontconfig
-, wayland
-, libxkbcommon
+{
+  lib,
+  fetchFromGitHub,
+  rustPlatform,
+  pkg-config,
+  fontconfig,
+  wayland,
+  libxkbcommon,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -21,7 +22,11 @@ rustPlatform.buildRustPackage rec {
   cargoSha256 = "sha256-PEOvz3m8/9gsWfczfNYMqXU5+Ga3ylE036vUheY2LB0=";
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ fontconfig wayland libxkbcommon ];
+  buildInputs = [
+    fontconfig
+    wayland
+    libxkbcommon
+  ];
 
   postFixup =
     let

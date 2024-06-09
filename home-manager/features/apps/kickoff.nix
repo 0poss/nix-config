@@ -1,4 +1,9 @@
-{ pkgs, config, homeConfFiles, ... }:
+{
+  pkgs,
+  config,
+  homeConfFiles,
+  ...
+}:
 let
   colors = config.colorScheme.colors;
 in

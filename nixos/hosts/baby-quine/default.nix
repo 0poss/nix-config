@@ -3,7 +3,8 @@
   imports = with nixosConfFiles; [
     features.standard-disk-layout
 
-    profiles.hardened
+    #profiles.hardened
+    features.pie-overlay
 
     users.oposs
     features.wayland
@@ -11,7 +12,7 @@
     features.wireless
     features.pipewire
     features.locale
-    features.pie-overlay
+    features.adb
 
     ./hardware-configuration.nix
     ./persist.nix
@@ -37,7 +38,12 @@
   networking.hostName = "baby-quine";
 
   environment = with pkgs; {
-    systemPackages = [ git home-manager vim sbctl ];
+    systemPackages = [
+      git
+      home-manager
+      vim
+      sbctl
+    ];
   };
 
   security.chromiumSuidSandbox.enable = true;

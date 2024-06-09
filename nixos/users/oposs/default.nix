@@ -1,19 +1,32 @@
-{ pkgs, lib, config, homeConfFiles, inputs, overlays, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  homeConfFiles,
+  inputs,
+  overlays,
+  ...
+}:
 {
   imports = [ inputs.home-manager.nixosModules.home-manager ];
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs homeConfFiles overlays; };
+    extraSpecialArgs = {
+      inherit inputs homeConfFiles overlays;
+    };
     users.oposs = homeConfFiles.homes.oposs;
   };
 
   users.users.oposs = {
     isNormalUser = true;
     description = "oposs";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ] ++ lib.optionals (config.virtualisation.libvirtd.enable) [ "libvirtd" ];
+    extraGroups =
+      [
+        "networkmanager"
+        "wheel"
+      ]
+      ++ lib.optionals (config.virtualisation.libvirtd.enable) [ "libvirtd" ]
+      ++ lib.optionals (config.programs.adb.enable) [ "adbusers" ];
 
     shell = pkgs.zsh;
 

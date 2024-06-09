@@ -1,4 +1,11 @@
-{ inputs, homeConfFiles, overlays, pkgs, nixosConfFiles, ... }:
+{
+  inputs,
+  homeConfFiles,
+  overlays,
+  pkgs,
+  nixosConfFiles,
+  ...
+}:
 {
   imports = with nixosConfFiles; [
     inputs.home-manager.nixosModules.home-manager
@@ -27,12 +34,14 @@
     };
   };
 
-  nix.settings.substituters = [];
+  nix.settings.substituters = [ ];
   system.stateVersion = "23.05";
   nixpkgs.hostPlatform = "x86_64-linux";
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs homeConfFiles overlays; };
+    extraSpecialArgs = {
+      inherit inputs homeConfFiles overlays;
+    };
     users.oposs = homeConfFiles.homes.oposs;
   };
 

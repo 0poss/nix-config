@@ -36,7 +36,12 @@
   networking.hostName = "mini-newton";
 
   environment = with pkgs; {
-    systemPackages = [ git home-manager vim sbctl ];
+    systemPackages = [
+      git
+      home-manager
+      vim
+      sbctl
+    ];
   };
 
   security.chromiumSuidSandbox.enable = true;

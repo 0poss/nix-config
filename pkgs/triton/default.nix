@@ -1,11 +1,12 @@
-{ stdenv
-, fetchFromGitHub
-, z3
-, llvm
-, python3
-, boost
-, capstone
-, cmake
+{
+  stdenv,
+  fetchFromGitHub,
+  z3,
+  llvm,
+  python3,
+  boost,
+  capstone,
+  cmake,
 }:
 
 stdenv.mkDerivation {
@@ -21,9 +22,13 @@ stdenv.mkDerivation {
 
   enableParallelBuilding = true;
   nativeBuildInputs = [ cmake ];
-  buildInputs = [ python3 boost capstone z3 llvm ];
-
-  cmakeFlags = [
-    "-DLLVM_INTERFACE=ON"
+  buildInputs = [
+    python3
+    boost
+    capstone
+    z3
+    llvm
   ];
+
+  cmakeFlags = [ "-DLLVM_INTERFACE=ON" ];
 }

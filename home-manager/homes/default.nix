@@ -1,3 +1,1 @@
-{
-  oposs = ./oposs;
-}
+{ oposs = ./oposs; }

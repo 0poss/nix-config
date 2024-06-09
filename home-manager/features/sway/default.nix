@@ -1,13 +1,15 @@
-{ config, homeConfFiles, pkgs, lib, ... }:
+{
+  config,
+  homeConfFiles,
+  pkgs,
+  lib,
+  ...
+}:
 let
   sway-cfg = config.wayland.windowManager.sway.config;
   colors = config.colorScheme.colors;
-  inherit (builtins)
-    toString;
-  inherit (lib)
-    listToAttrs
-    nameValuePair
-    range;
+  inherit (builtins) toString;
+  inherit (lib) listToAttrs nameValuePair range;
 in
 {
   imports = with homeConfFiles.features; [
@@ -20,13 +22,16 @@ in
     wallpapers
   ];
 
-  home.packages = with pkgs; [ grim slurp wl-clipboard ];
+  home.packages = with pkgs; [
+    grim
+    slurp
+    wl-clipboard
+  ];
 
   wayland.windowManager.sway =
     let
       mod = sway-cfg.modifier;
-      menu_prompt =
-        "system: [e]xit [l]ock [r]eboot [p]oweroff [s]uspend";
+      menu_prompt = "system: [e]xit [l]ock [r]eboot [p]oweroff [s]uspend";
       menu_mode = {
         e = "exec swaymsg exit";
         l = "exec swaylock";
@@ -56,7 +61,12 @@ in
         up = "k";
         right = "l";
 
-        startup = [{ command = "mako"; always = true; }];
+        startup = [
+          {
+            command = "mako";
+            always = true;
+          }
+        ];
 
         fonts = {
           names = [ config.fontProfiles.monospace.family ];
@@ -67,14 +77,12 @@ in
         input = {
           "*" = {
             xkb_layout = config.home.keyboard.layout;
-          } // lib.optionalAttrs ("us" == config.home.keyboard.layout) {
-            xkb_variant = "intl";
-          };
+          } // lib.optionalAttrs ("us" == config.home.keyboard.layout) { xkb_variant = "intl"; };
         };
 
         output = {
           "*" = {
-            bg = ''"'' + (toString config.wallpaper.background) + ''" fill'';
+            bg = ''"${config.wallpaper.background}" fill'';
           };
         };
 
@@ -97,8 +105,7 @@ in
 
         bars = [
           {
-            statusCommand =
-              "i3status-rs ~/.config/i3status-rust/config-default.toml";
+            statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
             fonts = {
               names = [ config.fontProfiles.monospace.family ];
             };
@@ -119,7 +126,11 @@ in
         modes =
           let
             inherit (sway-cfg)
-              left down up right;
+              left
+              down
+              up
+              right
+              ;
           in
           {
             "${menu_prompt}" = menu_mode;
@@ -138,27 +149,31 @@ in
           let
             mod = sway-cfg.modifier;
             inherit (sway-cfg)
-              terminal menu left down up right;
+              terminal
+              menu
+              left
+              down
+              up
+              right
+              ;
           in
           let
             ws =
-              if "fr" == config.home.keyboard.layout
-              then {
-                k1 = "ampersand";
-                k2 = "eacute";
-                k3 = "quotedbl";
-                k4 = "apostrophe";
-                k5 = "parenleft";
-                k6 = "minus";
-                k7 = "egrave";
-                k8 = "underscore";
-                k9 = "ccedilla";
-                k10 = "agrave";
-              }
+              if "fr" == config.home.keyboard.layout then
+                {
+                  k1 = "ampersand";
+                  k2 = "eacute";
+                  k3 = "quotedbl";
+                  k4 = "apostrophe";
+                  k5 = "parenleft";
+                  k6 = "minus";
+                  k7 = "egrave";
+                  k8 = "underscore";
+                  k9 = "ccedilla";
+                  k10 = "agrave";
+                }
               else
-                listToAttrs
-                  (map (i: nameValuePair ("k" + toString i) (toString (lib.mod i 10)))
-                    (range 1 10));
+                listToAttrs (map (i: nameValuePair ("k" + toString i) (toString (lib.mod i 10))) (range 1 10));
           in
           {
             "${mod}+Shift+b" = "reload";

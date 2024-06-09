@@ -1,20 +1,21 @@
-{ lib
-, stdenv
-, autoPatchelfHook
-, copyDesktopItems
-, dbus
-, fontconfig
-, freetype
-, libGL
-, libxkbcommon
-, makeDesktopItem
-, makeWrapper
-, requireFile
-, unzip
-, wayland-scanner
-, python310
-, xorg
-, zlib
+{
+  lib,
+  stdenv,
+  autoPatchelfHook,
+  copyDesktopItems,
+  dbus,
+  fontconfig,
+  freetype,
+  libGL,
+  libxkbcommon,
+  makeDesktopItem,
+  makeWrapper,
+  requireFile,
+  unzip,
+  wayland-scanner,
+  python310,
+  xorg,
+  zlib,
 }:
 
 stdenv.mkDerivation {

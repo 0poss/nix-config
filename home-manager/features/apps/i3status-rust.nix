@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   colors = config.colorScheme.colors;
 in
@@ -52,31 +57,29 @@ in
               }
 
               { block = "cpu"; }
-
-            ] ++
-
-            lib.optionals config.i3status-rust.has-backlight [
-              {
-                block = "backlight";
-                device = "intel_backlight";
-              }
-
-              {
-                block = "battery";
-                format = " $icon $percentage ";
-                full_threshold = 80;
-                good = 80;
-                warning = 20;
-                critical = 10;
-                empty_threshold = 5;
-              }
             ]
+            ++
+
+              lib.optionals config.i3status-rust.has-backlight [
+                {
+                  block = "backlight";
+                  device = "intel_backlight";
+                }
+
+                {
+                  block = "battery";
+                  format = " $icon $percentage ";
+                  full_threshold = 80;
+                  good = 80;
+                  warning = 20;
+                  critical = 10;
+                  empty_threshold = 5;
+                }
+              ]
 
             ++ [
 
-              {
-                block = "sound";
-              }
+              { block = "sound"; }
 
               {
                 block = "memory";
@@ -94,8 +97,14 @@ in
                 alert = 40;
                 format = " $icon $path: $used/$total ";
                 click = [
-                  { button = "right"; update = true; }
-                  { button = "left"; update = true; }
+                  {
+                    button = "right";
+                    update = true;
+                  }
+                  {
+                    button = "left";
+                    update = true;
+                  }
                 ];
               }
 

@@ -14,8 +14,6 @@
   home.file.".emacs.d/early-init.el".source = ./early-init.el;
 
   home.file.".emacs.d/config.org" = {
-    onChange = "unlink ~/.emacs.d/config.el || true";
-
     # Please email me if there's a shortcut function for this.
     # Patch the `config.org` file to substitute the "@FIXED-PITCH-FONT@" and
     #   "@VARIABLE-PITCH-FONT@" strings by their right value.
@@ -45,11 +43,14 @@
       # We require emacs to tangle the src file.
       # If emacs is enabled
       nativeBuildInputs = [
-        (if config.programs.emacs.enable
-        then config.programs.emacs.package
-        else if config.services.emacs.enable
-        then config.services.emacs.package
-        else pkgs.emacs-nox)
+        (
+          if config.programs.emacs.enable then
+            config.programs.emacs.package
+          else if config.services.emacs.enable then
+            config.services.emacs.package
+          else
+            pkgs.emacs-nox
+        )
       ];
       phases = [ "installPhase" ];
       outputs = [ "out" ];

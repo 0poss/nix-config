@@ -1,7 +1,17 @@
-{ lib, pkgs, inputs, config, overlays, homeConfFiles, ... }:
+{
+  lib,
+  pkgs,
+  inputs,
+  config,
+  overlays,
+  homeConfFiles,
+  ...
+}:
 {
   imports = with homeConfFiles.features; [
     inputs.nix-colors.homeManagerModules.default
+    inputs.impermanence.nixosModules.home-manager.impermanence
+
     emacs
     fonts
     sway
@@ -27,7 +37,7 @@
       pfetch
       binary-ninja
       nil # nix language server
-      nixpkgs-fmt # nix formatter
+      nixfmt-rfc-style # nix formatter
       texliveMedium
       pandoc
       python3
@@ -59,5 +69,18 @@
     enable = true;
     userName = "0poss";
     userEmail = "brnnrlxndr@gmail.com";
+  };
+
+  home.persistence."/persist/home/oposs" = {
+    allowOther = true;
+    directories = [
+      "Documents"
+      "Pictures"
+      ".emacs.d"
+      #".config"
+      ".local"
+      ".gnupg"
+      ".ssh"
+    ];
   };
 }

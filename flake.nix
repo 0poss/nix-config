@@ -19,36 +19,51 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      ...
+    }@inputs:
     let
-      forAllSystems = nixpkgs.lib.genAttrs [
-        "x86_64-linux"
-      ];
+      forAllSystems = nixpkgs.lib.genAttrs [ "x86_64-linux" ];
 
       overlays = import ./overlays { inherit inputs; };
 
       nixosConfFiles = import ./nixos;
       homeConfFiles = import ./home-manager;
 
-      mkHome = modules: pkgs: home-manager.lib.homeManagerConfiguration {
-        inherit modules pkgs;
-        extraSpecialArgs = { inherit inputs homeConfFiles overlays; };
-      };
-      mkNixOS = modules: nixpkgs.lib.nixosSystem {
-        inherit modules;
-        specialArgs = { inherit inputs nixosConfFiles homeConfFiles overlays; };
-      };
+      mkHome =
+        modules: pkgs:
+        home-manager.lib.homeManagerConfiguration {
+          inherit modules pkgs;
+          extraSpecialArgs = {
+            inherit inputs homeConfFiles overlays;
+          };
+        };
+      mkNixOS =
+        modules:
+        nixpkgs.lib.nixosSystem {
+          inherit modules;
+          specialArgs = {
+            inherit
+              inputs
+              nixosConfFiles
+              homeConfFiles
+              overlays
+              ;
+          };
+        };
     in
     {
       inherit overlays;
 
-      devShells = forAllSystems (system: import ./dev-shells {
-        pkgs = nixpkgs.legacyPackages.${system};
-      });
+      devShells = forAllSystems (
+        system: import ./dev-shells { pkgs = nixpkgs.legacyPackages.${system}; }
+      );
 
-      packages = forAllSystems (system: import ./pkgs {
-        pkgs = nixpkgs.legacyPackages.${system};
-      });
+      packages = forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
 
       nixosConfigurations = {
         "nixos-teletubbies" = mkNixOS [ nixosConfFiles.hosts.teletubbies ];
@@ -58,9 +73,7 @@
       };
 
       homeConfigurations = {
-        "home-oposs" = mkHome
-          [ homeConfFiles.homes.oposs ]
-          nixpkgs.legacyPackages."x86_64-linux";
+        "home-oposs" = mkHome [ homeConfFiles.homes.oposs ] nixpkgs.legacyPackages."x86_64-linux";
       };
     };
 }

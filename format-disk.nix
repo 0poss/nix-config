@@ -38,15 +38,24 @@
                   subvolumes = {
                     "/fsroot" = {
                       mountpoint = "/";
-                      mountOptions = [ "compress=lzo" "noatime" ];
+                      mountOptions = [
+                        "compress=lzo"
+                        "noatime"
+                      ];
                     };
                     "/nix" = {
                       mountpoint = "/nix";
-                      mountOptions = [ "compress=lzo" "noatime" ];
+                      mountOptions = [
+                        "compress=lzo"
+                        "noatime"
+                      ];
                     };
                     "/persist" = {
                       mountpoint = "/persist";
-                      mountOptions = [ "compress=lzo" "noatime" ];
+                      mountOptions = [
+                        "compress=lzo"
+                        "noatime"
+                      ];
                     };
                   };
                   postCreateHook = ''

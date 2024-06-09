@@ -1,4 +1,9 @@
-{ pkgs, lib, nixosConfFiles, ... }:
+{
+  pkgs,
+  lib,
+  nixosConfFiles,
+  ...
+}:
 {
   imports = with nixosConfFiles; [
     features.standard-disk-layout
@@ -26,10 +31,9 @@
   console.keyMap = "us";
 
   home-manager = {
-    users.oposs =
-      {
-        home.keyboard.layout = "us";
-      };
+    users.oposs = {
+      home.keyboard.layout = "us";
+    };
   };
 
   users.users.root.hashedPassword = "$6$rounds=50000000$cvIEZAR5IvtCciec$s2or9o8yAwnPO2gJmTE78Av3NJJRYXSsfBi1Rnf0IzU/0NsYENzDhBvszqWs2wZeEZ2qENawAMbjbbXVxvdwJ.";
@@ -39,7 +43,11 @@
   networking.hostName = "teletubbies";
 
   environment = with pkgs; {
-    systemPackages = [ git home-manager vim ];
+    systemPackages = [
+      git
+      home-manager
+      vim
+    ];
   };
 
   security.chromiumSuidSandbox.enable = true;

@@ -4,7 +4,7 @@
 * NixOS Flake Configuration
 This is my full NixOS configuration.
 
-* Notable Features
+* TODO List
 - [X] Secure Boot
 - [X] us-intl in sway
 - [ ] Screenshare
@@ -15,6 +15,7 @@ This is my full NixOS configuration.
 - [ ] CCache
 - [ ] Easily deployable VMs, most notably for running untrused binaries
 - Emacs:
+  - [ ] Cmake support
   - [ ] Auto-suggest words in text-mode based on dictonary and other words in the documents.
   - [ ] Increase undo buffer size.
   - [ ] Org-like markdown rendering.

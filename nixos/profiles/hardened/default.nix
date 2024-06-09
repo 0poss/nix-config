@@ -9,12 +9,16 @@ in
   services.logrotate.checkConfig = false;
 
   boot = {
-    kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_6_7_hardened.override
-      {
+    kernelPackages = pkgs.linuxPackagesFor (
+      (pkgs.linux_6_9_hardened.override {
         #stdenv = pkgs.ccacheStdenv;
         autoModules = true;
         ignoreConfigErrors = true;
-      });
+      }).overrideAttrs
+        (old: {
+          nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.ncurses ];
+        })
+    );
 
     kernelPatches = [
       {
@@ -70,6 +74,8 @@ in
             # DRM [=y] && HAS_IOMEM [=y] && (AGP [=y] || AGP [=y]=n) && !EMULATED_CMPXCHG && HAS_DMA [=y]
             KCMP = hno;
             IO_URING = hno;
+            BLK_DEV_UBLK = hno;
+            HWPOISON_INJECT = hno;
             MTD_PHRAM = hno;
             MTD_SLRAM = hno;
             DEBUG_VIRTUAL = hye;
@@ -84,6 +90,32 @@ in
             IA32_EMULATION = hno;
             COMPAT = hno;
             DEBUG_FS = hno;
+            MEMTEST = hno;
+
+            PUNIT_ATOM_DEBUG = hno;
+            X86_DEBUG_FPU = hno;
+            DEBUG_ENTRY = hno;
+            IO_DELAY_NONE = hye;
+            IO_DELAY_0X80 = hno;
+            EARLY_PRINTK = hno;
+            X86_VERBOSE_BOOTUP = hno;
+            RCU_TRACE = hno;
+            RCU_REF_SCALE_TEST = hno;
+            DEBUG_PLIST = hno;
+            SCF_TORTURE_TEST = hno;
+            SCHEDSTATS = hno;
+            TEST_LOCKUP = hno;
+            TEST_UBSAN = hno;
+            UBSAN_SHIFT = hye;
+            UBSAN_DIV_ZERO = hye;
+            STRIP_ASM_SYMS = hye;
+            DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT = hno;
+            DEBUG_INFO_NONE = hye;
+            DEBUG_BUGVERBOSE = hno;
+            EFI_DISABLE_PCI_DMA = hye;
+            USERFAULTFD = hno;
+            CROSS_MEMORY_ATTACH = hno;
+            BOOTPARAM_HARDLOCKUP_PANIC = hye;
           };
       }
     ];
@@ -149,4 +181,16 @@ in
     forcePageTableIsolation = mkHardOpt true;
     virtualisation.flushL1DataCache = mkHardOpt "always";
   };
+
+  #nixpkgs.overlays = [
+  #  (final: prev: {
+  #    ungoogled-chromium = prev.ungoogled-chromium.overrideAttrs (ucOld: {
+  #      passthru = ucOld.passthru // {
+  #        browser = ucOld.passthru.browser.overrideAttrs (bOld: {
+  #          gnFlags = bOld.gnFlags + " is_asan=true";
+  #        });
+  #      };
+  #    });
+  #  })
+  #];
 }

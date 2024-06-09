@@ -1,22 +1,22 @@
-{ lib
-, stdenv
-, fetchurl
-, libGL
-, zlib
-, libkrb5
-, libsecret
-, libunwind
-, libxkbcommon
-, glib
-, makeWrapper
-, openssl
-, xorg
-, dbus
-, fontconfig
-, freetype
-, makeDesktopItem
+{
+  lib,
+  stdenv,
+  fetchurl,
+  libGL,
+  zlib,
+  libkrb5,
+  libsecret,
+  libunwind,
+  libxkbcommon,
+  glib,
+  makeWrapper,
+  openssl,
+  xorg,
+  dbus,
+  fontconfig,
+  freetype,
+  makeDesktopItem,
 }:
-
 
 let
   srcs = builtins.fromJSON (builtins.readFile ./srcs.json);
@@ -26,9 +26,7 @@ stdenv.mkDerivation rec {
   pname = "ida-free";
   version = "8.2.230124";
 
-  src = fetchurl {
-    inherit (srcs.${stdenv.system}) url sha256;
-  };
+  src = fetchurl { inherit (srcs.${stdenv.system}) url sha256; };
 
   icon = fetchurl {
     urls = [
@@ -118,7 +116,11 @@ stdenv.mkDerivation rec {
     sourceProvenance = with sourceTypes; [ binaryNativeCode ];
     license = licenses.unfree;
     maintainers = with maintainers; [ lourkeur ];
-    platforms = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
+    platforms = [
+      "x86_64-linux"
+      "x86_64-darwin"
+      "aarch64-darwin"
+    ];
     mainProgram = "ida64";
   };
 }

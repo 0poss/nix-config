@@ -1,8 +1,6 @@
 { inputs, ... }:
 {
-  imports = [
-    inputs.impermanence.nixosModules.impermanence
-  ];
+  imports = [ inputs.impermanence.nixosModules.impermanence ];
 
   environment.persistence = {
     "/persist" = {
@@ -16,8 +14,14 @@
           "Documents"
           "Pictures"
           ".config"
-          { directory = ".ssh"; mode = "0700"; }
-          { directory = ".gnupg"; mode = "0700"; }
+          {
+            directory = ".ssh";
+            mode = "0700";
+          }
+          {
+            directory = ".gnupg";
+            mode = "0700";
+          }
         ];
       };
     };

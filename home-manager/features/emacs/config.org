@@ -377,6 +377,7 @@ Display documentation next to the selected completion entry.
 Make corfu work in the terminal.
 #+BEGIN_SRC emacs-lisp
   (use-package corfu-terminal
+    :straight (:build t)
     :defer t
     :if (not (display-graphic-p))
     :hook (global-corfu-mode . corfu-terminal-mode))
@@ -428,7 +429,6 @@ Get those snippets.
 
 *** Eglot
 #+BEGIN_SRC emacs-lisp
-
   (use-package eglot
     :straight (:build t)
     :defer t
@@ -448,8 +448,16 @@ Get those snippets.
      ("C-S-p" . eglot-shutdown-all))
     :init
     (setq eglot-server-programs nil)
+    :hook
+    ((c++-mode . eglot-ensure))
     :config
     (setq eglot-ignored-server-capabilities '(:inlayHintProvider))
+    (add-to-list 'eglot-server-programs '(c++-mode . ("clangd"
+                                                      "--background-index"
+                                                      "-j=8"
+                                                      "--header-insertion=iwyu"
+                                                      "--pch-storage=memory"
+                                                      "--clang-tidy")))
     :custom
     (eglot-autoshutdown t)
     (read-process-output-max (* 8 1024 1024)))
@@ -463,24 +471,6 @@ Get those snippets.
 #+END_SRC
 
 *** Languages
-**** C/C++
-#+BEGIN_SRC emacs-lisp
-  (use-package c-mode
-    :straight (:build t :type built-in)
-    :defer t
-    :commands (c-mode)
-    :config
-    (add-to-list 'eglot-server-programs
-                   '(c-mode "clangd")))
-
-  (use-package c++-mode
-    :straight (:build t :type built-in)
-    :defer t
-    :commands (c++-mode)
-    :config
-    (add-to-list 'eglot-server-programs
-                   '(c-mode "clangd")))
-#+END_SRC
 
 **** Python
 #+BEGIN_SRC emacs-lisp
@@ -517,7 +507,7 @@ Have that ~nix-mode~.
                  '(nix-mode . ("nil"
                                :initializationOptions
                                (:formatting
-                                (:command [ "nixpkgs-fmt" ])
+                                (:command [ "nixfmt" ])
                                 :nix
                                 (:flake (:authEvalInputs t))))))
     :hook
@@ -561,6 +551,13 @@ Have that ~nix-mode~.
 #+END_SRC
 
 **** Haskell
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode
+    :straight (:build t)
+    :defer t
+    :commands (haskell-mode))
+#+END_SRC
+
 * Applications
 *** Version Control
 **** Magit

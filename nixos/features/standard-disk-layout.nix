@@ -10,41 +10,56 @@ in
   };
 
   config = {
-    fileSystems = {
-      "/" = {
-        device = "/dev/mapper/${hostName}-opened";
+    fileSystems =
+      {
+        "/" = {
+          device = "/dev/mapper/${hostName}-opened";
 
-        fsType = if cfg.ephemeral-btrfs.enable then "btrfs" else "auto";
-        options =
-          if cfg.ephemeral-btrfs.enable
-          then [ "subvol=fsroot" "compress=lzo" "noatime" ]
-          else [ "defaults" ];
+          fsType = if cfg.ephemeral-btrfs.enable then "btrfs" else "auto";
+          options =
+            if cfg.ephemeral-btrfs.enable then
+              [
+                "subvol=fsroot"
+                "compress=lzo"
+                "noatime"
+              ]
+            else
+              [ "defaults" ];
 
-        encrypted = lib.mkIf cfg.encryption.enable {
-          enable = true;
-          label = "${hostName}-opened";
-          blkDev = "/dev/disk/by-label/${hostName}-crypt";
+          encrypted = lib.mkIf cfg.encryption.enable {
+            enable = true;
+            label = "${hostName}-opened";
+            blkDev = "/dev/disk/by-label/${hostName}-crypt";
+          };
+        };
+
+        "/boot" = {
+          device = "/dev/disk/by-label/NIXOS-BOOT";
+          fsType = "vfat";
+        };
+      }
+      // lib.optionalAttrs cfg.ephemeral-btrfs.enable {
+        "/nix" = {
+          device = "/dev/disk/by-label/${hostName}";
+          fsType = "btrfs";
+          options = [
+            "subvol=nix"
+            "compress=lzo"
+            "noatime"
+          ];
+        };
+
+        "/persist" = {
+          device = "/dev/disk/by-label/${hostName}";
+          fsType = "btrfs";
+          options = [
+            "subvol=persist"
+            "compress=lzo"
+            "noatime"
+          ];
+          neededForBoot = true;
         };
       };
-
-      "/boot" = {
-        device = "/dev/disk/by-label/NIXOS-BOOT";
-        fsType = "vfat";
-      };
-    } // lib.optionalAttrs cfg.ephemeral-btrfs.enable {
-      "/nix" = {
-        device = "/dev/disk/by-label/${hostName}";
-        fsType = "btrfs";
-        options = [ "subvol=nix" "compress=lzo" "noatime" ];
-      };
-
-      "/persist" = {
-        device = "/dev/disk/by-label/${hostName}";
-        fsType = "btrfs";
-        options = [ "subvol=persist" "compress=lzo" "noatime" ];
-        neededForBoot = true;
-      };
-    };
 
     boot.initrd = lib.mkIf cfg.ephemeral-btrfs.enable {
       supportedFilesystems = [ "btrfs" ];

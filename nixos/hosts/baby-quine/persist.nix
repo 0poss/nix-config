@@ -1,8 +1,8 @@
 { inputs, ... }:
 {
-  imports = [
-    inputs.impermanence.nixosModules.impermanence
-  ];
+  imports = [ inputs.impermanence.nixosModules.impermanence ];
+
+  programs.fuse.userAllowOther = true;
 
   environment.persistence = {
     "/persist" = {
@@ -14,12 +14,12 @@
 
       users.oposs = {
         directories = [
-          "Documents"
-          "Pictures"
+          #"Documents"
+          #"Pictures"
           ".config"
-          ".emacs.d"
-          { directory = ".ssh"; mode = "0700"; }
-          { directory = ".gnupg"; mode = "0700"; }
+          #".emacs.d"
+          #{ directory = ".ssh"; mode = "0700"; }
+          #{ directory = ".gnupg"; mode = "0700"; }
         ];
       };
     };

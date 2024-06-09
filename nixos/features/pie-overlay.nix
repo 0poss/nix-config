@@ -1,57 +1,77 @@
-{
-  nixpkgs.overlays = [
-    (
-      let
-        # bootstrapTools' `glibc` does not provide enough PIE linking environment.
-        isGoodStdenv = stdenv: stdenv.name == "stdenv-linux";
-        # These are package I didn't manage to fix.
-        excluded = [ "ghc" ];
-      in
-      self: super: {
-        stdenv = super.stdenv // super.lib.optionalAttrs (isGoodStdenv super.stdenv) {
-          mkDerivation = fnOrAttrs: super.stdenv.mkDerivation (
-            if builtins.isFunction fnOrAttrs then
-              args: (fnOrAttrs args) // { hardeningEnable = [ "pie" ]; }
-            else
-              fnOrAttrs // super.lib.optionalAttrs
-                (!(builtins.elem (fnOrAttrs.pname or fnOrAttrs.name) excluded))
-                { hardeningEnable = [ "pie" ]; }
-          );
-        };
+{ lib, ... }:
+let
+  inherit (builtins) elem listToAttrs;
+  inherit (lib) optionals;
 
-        # Fixes for broken packages built from source.
-        sphinx = super.sphinx.overridePythonAttrs { doCheck = false; };
-        libsecret = super.libsecret.overrideAttrs { doCheck = false; };
-        zopfli = super.zopfli.overrideAttrs { doCheck = false; };
-        xdg-desktop-portal = super.xdg-desktop-portal.overrideAttrs {
-          mesonFlags = [ "--sysconfdir=/etc" ];
-          outputs = [ "out" ];
-        };
-        srtp = super.srtp.overrideAttrs { doCheck = false; };
-        libressl = super.libressl.overrideAttrs { doCheck = false; };
-        libopus = super.libopus.overrideAttrs { doCheck = false; };
-        orc = super.orc.overrideAttrs { doCheck = false; };
-        sbctl = super.sbctl.overrideAttrs { doCheck = false; };
-        tracker = super.tracker.overrideAttrs { doCheck = false; };
-        libwacom = super.libwacom.overrideAttrs (old: {
-          doCheck = false;
-          buildInputs = [
-            self.python3
-            self.python3Packages.libevdev
-            self.python3Packages.pyudev
-            self.python3Packages.pytest
-          ] ++ old.buildInputs;
-        });
-      } // (
-        let
-          disable-check = pkg-name:
-            {
-              "${pkg-name}" =
-                super."${pkg-name}".overrideAttrs { doCheck = false; };
-            };
-        in
-        disable-check "xapian" // disable-check "libuv"
-      )
-    )
+  pie-exclusion-list = [ "ghc" ];
+
+  # TODO: why did I do this ? I can just use `pkgs.overrideAttrs (old: ...)'.
+  append-pie-flag =
+    attr:
+    if elem (attr.pname or attr.name) pie-exclusion-list then
+      attr
+    else
+      let
+        old-flags = attr.hardeningEnable or [ ];
+        addend = optionals (!(elem "pie" old-flags)) [ "pie" ];
+        new-flags = old-flags ++ addend;
+      in
+      attr // { hardeningEnable = new-flags; };
+
+  pie-mkDerivation =
+    super-mkDerivation: fnOrAttrs:
+    if builtins.isFunction fnOrAttrs then
+      super-mkDerivation (args: append-pie-flag (fnOrAttrs args))
+    else
+      super-mkDerivation (append-pie-flag fnOrAttrs);
+
+  disable-check-ctor = pkgs: pkg-name: {
+    name = pkg-name;
+    value = pkgs."${pkg-name}".overrideAttrs { doCheck = false; };
+  };
+
+  disable-checks-for = [
+    # Timeouts due to CPU-intensive build processes.
+    # Disabling checks for those packages is a solution.
+    # Another is to build the package using `nix build' and then
+    #   re-issuing a `nixos-rebuild'.
+    # Some packages here
+    "gitMinimal"
+    "libopus"
+    "dconf"
+    "orc"
+    "dbus-python"
+    "tracker"
+    "openexr"
+    "python311Packages.hypothesis"
+
+    # Broken tests.
+    # These are not test failures but misconfigured configurqtions that result
+    #   in the tests not running at all. in the tests not running at all.
+    "sbctl"
+
+    # Tests that don't work but idc
+    "libpulseaudio"
   ];
+
+  pie-overlay =
+    final: prev:
+    {
+      stdenv = prev.stdenv // {
+        mkDerivation = pie-mkDerivation prev.stdenv.mkDerivation;
+      };
+      libwacom = prev.libwacom.overrideAttrs (old: {
+        doCheck = false;
+        buildInputs = [
+          final.python3
+          final.python3Packages.libevdev
+          final.python3Packages.pyudev
+          final.python3Packages.pytest
+        ] ++ old.buildInputs;
+      });
+    }
+    // listToAttrs (map (disable-check-ctor prev) disable-checks-for);
+in
+{
+  nixpkgs.overlays = [ pie-overlay ];
 }

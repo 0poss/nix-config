@@ -1,8 +1,9 @@
-{ lib
-, stdenvNoCC
-, requireFile
-, unzip
-, sha256 ? "17cqpql8zvakczvjhbzp6mgxvr137av2nik53p0ylk6gwjlqklv1"
+{
+  lib,
+  stdenvNoCC,
+  requireFile,
+  unzip,
+  sha256 ? "17cqpql8zvakczvjhbzp6mgxvr137av2nik53p0ylk6gwjlqklv1",
 }:
 stdenvNoCC.mkDerivation {
   name = "berkeley-mono";

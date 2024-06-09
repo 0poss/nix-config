@@ -1,4 +1,9 @@
-{ config, inputs, homeConfFiles, ... }:
+{
+  config,
+  inputs,
+  homeConfFiles,
+  ...
+}:
 let
   colors = config.colorScheme.colors;
 in
